@@ -39,7 +39,7 @@ RUN wget "https://dl.google.com/go/go$GOLANG_VERSION.linux-amd64.tar.gz" && tar 
 ENV PATH="/usr/local/go/bin:/root/go/bin:${PATH}"
 RUN rm go$GOLANG_VERSION.linux-amd64.tar.gz
 
-WORKDIR /exec
+WORKDIR /graal/exec
 # Install Cloc
 RUN apt-get install -y --no-install-recommends \
   cloc
@@ -56,6 +56,16 @@ RUN go install github.com/boyter/scc@91af61dfda0d9fa8f9a0c9f32ee204d5925b1bef
 # Install Jadolint
 RUN wget https://github.com/crossminer/crossJadolint/releases/download/Pre-releasev2/jadolint.jar
 
+# Install Scancode
+RUN pip install execnet
+RUN git clone https://github.com/nexB/scancode-toolkit.git
+RUN cd scancode-toolkit && \
+    git checkout -b test_scancli 96069fd84066c97549d54f66bd2fe8c7813c6b52
+
+# Dealing with utils.py
+WORKDIR /home/runner/work/grimoirelab-graal/grimoirelab-graal/
+RUN ln -s /graal/exec/ exec
+
 
 RUN apt-get clean
 WORKDIR /graal/
@@ -64,6 +74,8 @@ COPY ./ /graal/
 RUN pip install --upgrade pip
 RUN pip install -r "requirements.txt"
 
-ENV PYTHONPATH=${PYTHONPATH}:/graal/
+# Dependencies for testing
+RUN pip install coveralls
+RUN gem install github-linguist -v 7.12.2
 
 RUN ./setup.py install
