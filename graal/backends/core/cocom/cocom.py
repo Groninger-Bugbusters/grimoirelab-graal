@@ -24,8 +24,6 @@
 
 from perceval.utils import DEFAULT_DATETIME, DEFAULT_LAST_DATETIME
 
-from graal.backends.core.analyzers.analyzer import Analyzer, is_in_paths
-
 from .cocom_analyzer_factory import CoComAnalyzerFactory
 from graal.graal import (Graal,
                          GraalCommand,

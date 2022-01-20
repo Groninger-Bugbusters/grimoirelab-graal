@@ -17,18 +17,16 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # Authors:
-#     wmeijer221 <w.meijer.5@student.rug.nl>
+#     Valerio Cosentino <valcos@bitergia.com>
+#     inishchith <inishchith@gmail.com>
 #
 
 from graal.graal import GraalError
 
-from graal.backends.core.cocom.compositions.composition_lizard_file import *
-from graal.backends.core.cocom.compositions.composition_lizard_repository import *
-from graal.backends.core.cocom.compositions.composition_scc_file import *
-from graal.backends.core.cocom.compositions.composition_scc_repository import *
+from graal.backends.core.covuln.compositions.composition_bandit import *
 
 
-class CoComAnalyzerFactory:
+class CoVulnAnalyzerFactory:
     """Factory class for Analyzer Compositions"""
 
     version = '0.1.0'
@@ -37,16 +35,8 @@ class CoComAnalyzerFactory:
         self.__load_compositions()
 
     def __load_compositions(self):
-        # TODO: add dynamic loading. Look at Graal, as it's used there for loading backends.
-        #       when doing so, the factory can be completely abstracted (i.e. one factory
-        #       can be used for all backends; have them load the concrete analyzers).
-        # TODO: do something about kind + category.
-        #       You shouldn't be able to load a composition with the composition kind.
         self.compositions = {}
-        self.__add(CompositionLizardFile())
-        self.__add(CompositionLizardRepository())
-        self.__add(CompositionSccFile())
-        self.__add(CompositionSccRepository())
+        self.__add(CompositionBandit())
 
     def __add(self, composer):
         """Adds composer to the factory"""
