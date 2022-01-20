@@ -78,7 +78,7 @@ class TestCoLangBackend(TestCaseRepo):
         self.assertEqual(commit['backend_name'], 'CoLang')
         self.assertEqual(commit['category'], CATEGORY_COLANG_CLOC)
         results = commit['data']['analysis']
-        result = results[next(iter(results))]
+        result = results[0]
 
         self.assertIn('blanks', result)
         self.assertTrue(type(result['blanks']), int)
@@ -86,8 +86,6 @@ class TestCoLangBackend(TestCaseRepo):
         self.assertTrue(type(result['comments']), int)
         self.assertIn('loc', result)
         self.assertTrue(type(result['loc']), int)
-        self.assertIn('total_files', result)
-        self.assertTrue(type(result['total_files']), int)
 
     def test_fetch_unknown(self):
         """Test whether commits are properly processed"""
