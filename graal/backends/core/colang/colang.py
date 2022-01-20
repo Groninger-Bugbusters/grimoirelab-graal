@@ -25,10 +25,12 @@
 from perceval.utils import DEFAULT_DATETIME, DEFAULT_LAST_DATETIME
 
 from graal.graal import Graal, GraalCommand, DEFAULT_WORKTREE_PATH
-from graal.backends.core.colang.colang_analyzer_factory import CoLangAnalyzerFactory
+from graal.backends.core.analyzer_composition_factory import AnalyzerCompositionFactory
 from graal.backends.core.colang.compositions.composition_linguist import CATEGORY_COLANG_LINGUIST
 
+CATEGORY_PACKAGE = "graal.backends.core.colang.compositions"
 DEFAULT_CATEGORY = CATEGORY_COLANG_LINGUIST
+
 
 class CoLang(Graal):
     """CoLang backend.
@@ -57,10 +59,10 @@ class CoLang(Graal):
                  entrypoint=None, in_paths=None, out_paths=None, details=False,
                  tag=None, archive=None):
         super().__init__(uri, git_path, worktreepath, exec_path=exec_path,
-                         entrypoint=entrypoint, in_paths=in_paths, out_paths=out_paths, 
+                         entrypoint=entrypoint, in_paths=in_paths, out_paths=out_paths,
                          details=details, tag=tag, archive=archive)
 
-        self.__factory = CoLangAnalyzerFactory()
+        self.__factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
         self.CATEGORIES = self.__factory.get_categories()
         self.__composer = None
 
@@ -117,11 +119,9 @@ class CoLang(Graal):
         """Extracts the category from a Code item."""
 
         analyzer = item['analyzer']
+        factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
 
-        factory = CoLangAnalyzerFactory()
-        composer = factory.get_composer(analyzer)
-
-        return composer.get_category()
+        return factory.get_category_from_kind(analyzer)
 
 
 class CoLangCommand(GraalCommand):

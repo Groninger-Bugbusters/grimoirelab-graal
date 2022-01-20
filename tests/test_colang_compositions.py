@@ -28,8 +28,8 @@ from graal.backends.core.colang.compositions.composition_linguist import Composi
 from .base_analyzer import TestCaseAnalyzer
 
 
-class TestCoComFactory(TestCaseAnalyzer):
-    """Tests CoCom factory."""
+class TestCoLangCompositions(TestCaseAnalyzer):
+    """Tests CoLang factory."""
 
     def test_cloc_merge(self):
         """Tests merge method of the Lizard File composition."""
