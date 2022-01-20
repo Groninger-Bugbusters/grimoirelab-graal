@@ -31,7 +31,7 @@ from graal.backends.core.cocom.compositions.composition_scc_file import Composit
 from graal.backends.core.cocom.compositions.composition_scc_repository import CompositionSccRepository
 from graal.graal import GraalError
 
-from .base_analyzer import TestCaseAnalyzer
+from base_analyzer import TestCaseAnalyzer
 
 
 class TestCoComFactory(TestCaseAnalyzer):
