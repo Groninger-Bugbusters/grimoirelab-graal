@@ -44,8 +44,8 @@ class TestFlake8(TestCaseAnalyzer):
 
         flake8 = Flake8()
         kwargs = {
-            'module_path': os.path.join(self.repo_path, "perceval"),
-            'worktree_path': self.worktree_path,
+            'entrypoint': 'perceval',
+            'worktreepath': self.worktree_path,
             'details': True
         }
         result = flake8.analyze(**kwargs)
@@ -60,8 +60,8 @@ class TestFlake8(TestCaseAnalyzer):
 
         flake8 = Flake8()
         kwargs = {
-            'module_path': os.path.join(self.repo_path, ANALYZER_TEST_FILE),
-            'worktree_path': self.worktree_path,
+            'entrypoint': ANALYZER_TEST_FILE,
+            'worktreepath': self.worktree_path,
             'details': False
         }
         result = flake8.analyze(**kwargs)
@@ -79,8 +79,8 @@ class TestFlake8(TestCaseAnalyzer):
 
         flake8 = Flake8()
         kwargs = {
-            'module_path': os.path.join(self.repo_path, ANALYZER_TEST_FILE),
-            'worktree_path': self.worktree_path,
+            'entrypoint': ANALYZER_TEST_FILE,
+            'worktreepath': self.worktree_path,
             'details': False
         }
         _ = flake8.analyze(**kwargs)

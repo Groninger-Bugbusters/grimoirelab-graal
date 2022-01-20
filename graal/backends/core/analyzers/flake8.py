@@ -23,7 +23,15 @@
 
 import subprocess
 
+from git import os
+
+from graal.graal import GraalError, GraalRepository
+
 from .analyzer import Analyzer
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Flake8(Analyzer):
@@ -39,9 +47,20 @@ class Flake8(Analyzer):
 
         :returns result: dict of the results of the analysis
         """
-        module_path = kwargs['module_path']
         details = kwargs['details']
-        worktree_path = kwargs['worktree_path']
+        worktree_path = kwargs['worktreepath']
+        if not kwargs['worktreepath'] or not kwargs['entrypoint']:
+            raise GraalError(cause="entrypoint or worktree path not valid")
+
+        module_path = os.path.join(worktree_path, kwargs['entrypoint'])
+
+        if not GraalRepository.exists(module_path):
+            if 'commit' not in kwargs:
+                logger.warning("module path %s does not exist, analysis will be skipped"
+                                % (module_path))
+            else:
+                logger.warning("module path %s does not exist at commit %s, analysis will be skipped"
+                                % (module_path, kwargs['commit']['commit']))
 
         try:
             msg = subprocess.check_output(
