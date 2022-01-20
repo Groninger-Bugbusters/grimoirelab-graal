@@ -23,7 +23,8 @@
 
 import logging
 import os
-from graal.backends.core.codep.codep_analyzer_factory import CoDepAnalyzerFactory
+from graal.backends.core.analyzer_composition_factory import AnalyzerCompositionFactory
+from graal.backends.core.codep.compositions.composition_reverse import CATEGORY_CODEP_PYREVERSE
 
 from graal.graal import (Graal,
                          GraalCommand,
@@ -35,11 +36,8 @@ from graal.backends.core.analyzers.jadolint import Jadolint, DEPENDENCIES
 from graal.backends.core.analyzers.reverse import Reverse
 from perceval.utils import DEFAULT_DATETIME, DEFAULT_LAST_DATETIME
 
-PYREVERSE = 'pyreverse'
-JADOLINT = 'jadolint'
-
-CATEGORY_CODEP_PYREVERSE = 'code_dependencies_' + PYREVERSE
-CATEGORY_CODEP_JADOLINT = 'code_dependencies_' + JADOLINT
+CATEGORY_PACKAGE = "graal.backends.core.codep.compositions"
+DEFAULT_CATEGORY = CATEGORY_CODEP_PYREVERSE
 
 logger = logging.getLogger(__name__)
 
@@ -66,8 +64,6 @@ class CoDep(Graal):
     """
     version = '0.4.0'
 
-    CATEGORIES = [CATEGORY_CODEP_PYREVERSE, CATEGORY_CODEP_JADOLINT]
-
     def __init__(self, uri, git_path, worktreepath=DEFAULT_WORKTREE_PATH, exec_path=None,
                  entrypoint=None, in_paths=None, out_paths=None, details=False,
                  tag=None, archive=None):
@@ -75,59 +71,21 @@ class CoDep(Graal):
                          entrypoint=entrypoint, in_paths=in_paths, out_paths=out_paths, details=details,
                          tag=tag, archive=archive)
 
-        self.__factory = CoDepAnalyzerFactory(jadolint_exec_path=exec_path)
+        self.__factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE, jadolint_exec_path=exec_path)
         self.CATEGORIES = self.__factory.get_categories()
         self.__composer = None
-        # self.analyzer_kind = None
-        # self.analyzer = None
 
-    def fetch(self, category=CATEGORY_CODEP_PYREVERSE, paths=None,
+    def fetch(self, category=DEFAULT_CATEGORY, paths=None,
               from_date=DEFAULT_DATETIME, to_date=DEFAULT_LAST_DATETIME,
               branches=None, latest_items=False):
         """Fetch commits and code (package and class) dependencies information."""
 
-        # TODO: add some validation?
-
-        # if not self.entrypoint and category == CATEGORY_CODEP_PYREVERSE:
-        #     raise GraalError(cause="Entrypoint cannot be null")
-
-        # if not self.exec_path and category == CATEGORY_CODEP_JADOLINT:
-        #     raise GraalError(cause="Exec path cannot be null")
-
-        # if category == CATEGORY_CODEP_PYREVERSE:
-        #     self.analyzer_kind = PYREVERSE
-        #     self.analyzer = PyreverseAnalyzer()
-        # elif category == CATEGORY_CODEP_JADOLINT:
-        #     self.analyzer_kind = JADOLINT
-        #     self.analyzer = JadolintAnalyzer(self.exec_path, analysis=DEPENDENCIES)
-        # else:
-        #     raise GraalError(cause="Unknown category %s" % category) 
-
-        # items = super().fetch(category,
-        #                       from_date=from_date, to_date=to_date,
-        #                       branches=branches, latest_items=latest_items)
         items = super().fetch(category, from_date=from_date, to_date=to_date,
                               branches=branches, latest_items=latest_items)
 
         self.__composer = self.__factory.get_composer(category)
-        self.analyzer_kind = self.__composer.get_kind()
 
         return items
-
-    # @staticmethod
-    # def metadata_category(item):
-    #     """Extracts the category from a Code item.
-
-    #     This backend generates the following types of item:
-    #     - 'code_dependencies_pyreverse'
-    #     - 'code_dependencies_jadolint'
-    #     """
-    #     if item['analyzer'] == PYREVERSE:
-    #         return CATEGORY_CODEP_PYREVERSE
-    #     elif item['analyzer'] == JADOLINT:
-    #         return CATEGORY_CODEP_JADOLINT
-    #     else:
-    #         raise GraalError(cause="Unknown analyzer %s" % item['analyzer'])
 
     def _filter_commit(self, commit):
         """Filter a commit according to its data (e.g., author, sha, etc.)
@@ -152,33 +110,7 @@ class CoDep(Graal):
 
         :param commit: a Perceval commit item
         """
-        # analysis = {}
-        # if self.analyzer_kind == PYREVERSE:
-        #     module_path = os.path.join(self.worktreepath, self.entrypoint)
 
-        #     if not GraalRepository.exists(module_path):
-        #         logger.warning("module path %s does not exist at commit %s, analysis will be skipped"
-        #                        % (module_path, commit['commit']))
-        #         return analysis
-
-        #     analysis = self.analyzer.analyze(module_path)
-        # else:
-        #     for committed_file in commit['files']:
-        #         file_path = committed_file['file']
-        #         if self.in_paths:
-        #             found = [p for p in self.in_paths if file_path.endswith(p)]
-        #             if not found:
-        #                 continue
-
-        #         local_path = self.worktreepath + '/' + file_path
-        #         if not GraalRepository.exists(local_path):
-        #             analysis.update({file_path: {DEPENDENCIES: []}})
-        #             continue
-
-        #         dependencies = self.analyzer.analyze(local_path)
-        #         analysis.update({file_path: dependencies})
-
-        # return analysis
         if not self.__composer:
             raise GraalError(cause="running analyze without having set an analyzer")
 
@@ -206,9 +138,18 @@ class CoDep(Graal):
         commit.pop('files', None)
         commit.pop('parents', None)
         commit.pop('refs', None)
-        commit['analyzer'] = self.analyzer_kind
+        commit['analyzer'] = self.__composer.get_kind()
 
         return commit
+
+    @staticmethod
+    def metadata_category(item):
+        """Extracts the category from a Code item."""
+
+        analyzer = item['analyzer']
+        factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
+
+        return factory.get_category_from_kind(analyzer)
 
 
 # class PyreverseAnalyzer(Analyzer):
@@ -267,6 +208,4 @@ class CoDepCommand(GraalCommand):
     def setup_cmd_parser(cls):
         """Returns the CoDep argument parser."""
 
-        parser = GraalCommand.setup_cmd_parser(cls.BACKEND)
-
-        return parser
+        return GraalCommand.setup_cmd_parser(cls.BACKEND)

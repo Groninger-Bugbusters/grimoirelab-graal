@@ -33,10 +33,6 @@ class CompositionJadolintDependencies(Composer):
 
     version = '0.1.0'
 
-    def __init__(self, jadolint_exec_path):
-        super().__init__()
-        self.jadolint_exec_path = jadolint_exec_path
-
     def get_category(self):
         return CATEGORY_CODEP_JADOLINT
 
@@ -45,7 +41,7 @@ class CompositionJadolintDependencies(Composer):
 
     # TODO: don't use method; change variable.
     def get_composition(self):
-        return [Jadolint(exec_path=self.jadolint_exec_path, analysis=DEPENDENCIES)]
+        return [Jadolint(exec_path=self.kwargs['jadolint_exec_path'], analysis=DEPENDENCIES)]
 
     def merge_results(self, results):
         return results[0]
