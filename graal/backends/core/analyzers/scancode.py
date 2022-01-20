@@ -47,7 +47,7 @@ class ScanCode(Analyzer):
     def __init__(self, cli=False):
         self.cli = cli
 
-    def __analyze_scancode(self, file_path):
+    def __analyze_scancode(self, file_path, local_path):
         """Add information about license and copyright using scancode
 
         :param file_path: file path (in case of scancode)
@@ -60,7 +60,7 @@ class ScanCode(Analyzer):
 
         try:
             msg = subprocess.check_output(
-                [self.exec_path, '--json-pp', '-', '--license', '--copyright', file_path]).decode("utf-8")
+                [self.exec_path, '--json-pp', '-', '--license', '--copyright', local_path]).decode("utf-8")
         except subprocess.CalledProcessError as e:
             raise GraalError(cause="Scancode failed at %s, %s" % (file_path, e.output.decode("utf-8")))
         finally:
@@ -147,7 +147,7 @@ class ScanCode(Analyzer):
                 continue
 
             if not self.cli:
-                license_info = self.__analyze_scancode(file_path)
+                license_info = self.__analyze_scancode(file_path, local_path)
                 license_info.update({'file_path': file_path})
                 analysis.append(license_info)
 

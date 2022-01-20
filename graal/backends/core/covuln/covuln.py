@@ -21,7 +21,8 @@
 #     inishchith <inishchith@gmail.com>
 #
 
-from graal.backends.core.covuln.covuln_analyzer_factory import CoVulnAnalyzerFactory
+from graal.backends.core.analyzer_composition_factory import AnalyzerCompositionFactory
+from graal.backends.core.covuln.compositions.composition_bandit import CATEGORY_COVULN
 
 from graal.graal import (
     Graal,
@@ -32,6 +33,8 @@ from graal.graal import (
 
 from perceval.utils import DEFAULT_DATETIME, DEFAULT_LAST_DATETIME
 
+CATEGORY_PACKAGE = "graal.backends.core.covuln.compositions"
+DEFAULT_CATEGORY = CATEGORY_COVULN
 
 class CoVuln(Graal):
     """CoVuln backend.
@@ -82,13 +85,16 @@ class CoVuln(Graal):
             archive=archive,
         )
 
-        self.__factory = CoVulnAnalyzerFactory()
+        if not entrypoint:
+            raise GraalError(cause="Entrypoint cannot be null")
+
+        self.__factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
         self.CATEGORIES = self.__factory.get_categories()
         self.__composer = None
 
     def fetch(
         self,
-        category,
+        category=DEFAULT_CATEGORY,
         from_date=DEFAULT_DATETIME,
         to_date=DEFAULT_LAST_DATETIME,
         branches=None,
@@ -153,13 +159,21 @@ class CoVuln(Graal):
 
         analyzer = item['analyzer']
 
-        factory = CoVulnAnalyzerFactory()
-        composer = factory.get_composer(analyzer)
+        factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
+        category = factory.get_category_from_kind(analyzer)
 
-        return composer.get_category()
+        return category
 
 
 class CoVulnCommand(GraalCommand):
-    """Class to run CoVuln backend from the command line."""
+    """Class to run CoLic backend from the command line."""
 
     BACKEND = CoVuln
+
+    @classmethod
+    def setup_cmd_parser(cls):
+        """Returns the CoLic argument parser."""
+
+        parser = GraalCommand.setup_cmd_parser(cls.BACKEND)
+
+        return parser

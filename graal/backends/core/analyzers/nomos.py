@@ -71,7 +71,7 @@ class Nomos(Analyzer):
                 continue
 
             try:
-                msg = subprocess.check_output([exec_path, file_path]).decode("utf-8")
+                msg = subprocess.check_output([exec_path, local_path]).decode("utf-8")
             except subprocess.CalledProcessError as e:
                 raise GraalError(cause="Nomos failed at %s, %s" % (file_path, e.output.decode("utf-8")))
             finally:

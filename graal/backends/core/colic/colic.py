@@ -22,7 +22,14 @@
 #
 
 from perceval.utils import DEFAULT_DATETIME, DEFAULT_LAST_DATETIME
-from graal.backends.core.colic.colic_analyzer_factory import CoLicAnalyzerFactory
+from graal.backends.core.analyzer_composition_factory import AnalyzerCompositionFactory
+
+from graal.backends.core.colic.compositions.composition_nomos import CATEGORY_COLIC_NOMOS
+from graal.backends.core.colic.compositions.composition_scancode import CATEGORY_COLIC_SCANCODE
+from graal.backends.core.colic.compositions.composition_scancode_cli import CATEGORY_COLIC_SCANCODE_CLI
+
+CATEGORY_PACKAGE = "graal.backends.core.colic.compositions"
+DEFAULT_CATEGORY = CATEGORY_COLIC_NOMOS
 
 from graal.graal import (Graal, GraalError,
                          GraalCommand,
@@ -60,11 +67,11 @@ class CoLic(Graal):
         if not GraalRepository.exists(exec_path):
             raise GraalError(cause="executable path %s not valid" % exec_path)
 
-        self.__factory = CoLicAnalyzerFactory()
+        self.__factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
         self.CATEGORIES = self.__factory.get_categories()
         self.__composer = None
 
-    def fetch(self, category,
+    def fetch(self, category=DEFAULT_CATEGORY,
               from_date=DEFAULT_DATETIME, to_date=DEFAULT_LAST_DATETIME,
               branches=None, latest_items=False):
         """Fetch commits and add license information."""
@@ -135,10 +142,10 @@ class CoLic(Graal):
 
         analyzer = item['analyzer']
 
-        factory = CoLicAnalyzerFactory()
-        composer = factory.get_composer(analyzer)
+        factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
+        category = factory.get_category_from_kind(analyzer)
 
-        return composer.get_category()
+        return category
 
 
 class CoLicCommand(GraalCommand):
