@@ -62,7 +62,7 @@ class CoVuln(Graal):
         updating the repository.
     """
 
-    version = "0.3.0"
+    version = "0.3.1"
 
     def __init__(
         self,
