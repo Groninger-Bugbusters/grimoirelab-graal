@@ -25,7 +25,7 @@ import unittest
 from graal.backends.core.colang.compositions.composition_cloc import CompositionCloc
 from graal.backends.core.colang.compositions.composition_linguist import CompositionLinguist
 
-from .base_analyzer import TestCaseAnalyzer
+from base_analyzer import TestCaseAnalyzer
 
 
 class TestCoLangCompositions(TestCaseAnalyzer):

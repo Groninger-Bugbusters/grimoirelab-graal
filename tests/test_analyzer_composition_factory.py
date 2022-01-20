@@ -31,7 +31,7 @@ from graal.backends.core.composer import Composer
 from graal.backends.core.analyzer_composition_factory import AnalyzerCompositionFactory
 from graal.graal import GraalError
 
-from .base_analyzer import TestCaseAnalyzer
+from base_analyzer import TestCaseAnalyzer
 
 
 class TestAnalyzerCompositionFactory(TestCaseAnalyzer):

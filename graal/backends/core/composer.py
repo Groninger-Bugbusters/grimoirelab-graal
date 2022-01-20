@@ -23,6 +23,9 @@
 class Composer:
     """Template class for composition of analyzers"""
 
+    def __init__(self, **kwargs):
+        self.kwargs = kwargs
+
     def get_kind(self):
         """Returns more readable name of this composition"""
 

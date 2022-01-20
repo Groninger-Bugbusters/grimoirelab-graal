@@ -25,7 +25,8 @@
 import os
 import unittest
 import unittest.mock
-from build.lib.graal.backends.core.cocom.compositions.composition_lizard_file import LIZARD_FILE
+from graal.backends.core.cocom.compositions.composition_lizard_file import LIZARD_FILE
+from graal.backends.core import cocom
 
 from graal.graal import GraalCommandArgumentParser, GraalError
 
@@ -38,7 +39,9 @@ from graal.backends.core.cocom.compositions.composition_scc_repository import (C
 from graal.backends.core.cocom import (CoCom, CoComCommand)
 from perceval.utils import DEFAULT_DATETIME
 
-from .base_repo import TestCaseRepo
+# from base_analyzer import (ANALYZER_TEST_FILE,
+#                             TestCaseAnalyzer)
+from base_repo import TestCaseRepo
 
 
 class TestCoComBackend(TestCaseRepo):

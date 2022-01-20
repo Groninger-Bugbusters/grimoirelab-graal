@@ -27,7 +27,7 @@ from graal.backends.core.cocom.compositions.composition_lizard_repository import
 from graal.backends.core.cocom.compositions.composition_scc_file import CompositionSccFile
 from graal.backends.core.cocom.compositions.composition_scc_repository import CompositionSccRepository
 
-from .base_analyzer import TestCaseAnalyzer
+from base_analyzer import TestCaseAnalyzer
 
 
 class TestCoComCompositions(TestCaseAnalyzer):

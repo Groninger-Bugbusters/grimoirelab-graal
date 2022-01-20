@@ -1,3 +1,5 @@
 #!/bin/bash
 
-sudo PYTHONPATH=`pwd` python tests/run_tests.py
+
+cd tests
+coverage run --source=graal run_tests.py

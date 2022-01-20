@@ -32,7 +32,7 @@ from graal.backends.core.colang.compositions.composition_linguist import CATEGOR
 from graal.backends.core.colang.compositions.composition_cloc import CATEGORY_COLANG_CLOC
 from graal.graal import GraalError, GraalCommandArgumentParser
 
-from .base_repo import TestCaseRepo
+from base_repo import TestCaseRepo
 
 
 class TestCoLangBackend(TestCaseRepo):

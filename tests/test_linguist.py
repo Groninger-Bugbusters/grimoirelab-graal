@@ -24,7 +24,7 @@
 import subprocess
 import unittest.mock
 
-from .base_analyzer import TestCaseAnalyzer
+from base_analyzer import TestCaseAnalyzer
 
 from graal.backends.core.analyzers.linguist import Linguist
 

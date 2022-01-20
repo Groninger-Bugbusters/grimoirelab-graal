@@ -30,9 +30,9 @@ from graal.backends.core.composer import Composer
 class AnalyzerCompositionFactory:
     """Factory class for Analyzer Composers"""
 
-    def __init__(self, target_package):
+    def __init__(self, target_package, **kwargs):
         try:
-            self.__composers, self.__kind_to_category = _load_composers_in_package(target_package)
+            self.__composers, self.__kind_to_category = _load_composers_in_package(target_package, **kwargs)
         except Exception as error:
             raise GraalError(cause="Error while loading composers.") from error
 
@@ -58,7 +58,7 @@ class AnalyzerCompositionFactory:
         return self.__kind_to_category[kind]
 
 
-def _load_composers_in_package(target_package):
+def _load_composers_in_package(target_package, **kwargs):
     """
     Loads composer objects from target package.
 
@@ -91,7 +91,7 @@ def _load_composers_in_package(target_package):
                 continue
             
             # creates instance and adds to result
-            composer = klass()
+            composer = klass(**kwargs)
             composers[composer.get_category()] = composer
             kind_to_category[composer.get_kind()] = composer.get_category()
 

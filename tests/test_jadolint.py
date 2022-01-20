@@ -73,7 +73,7 @@ class TestJadolint(TestCaseAnalyzer):
         kwargs = {
             'file_path': os.path.join(self.tmp_path, DOCKERFILE_TEST)
         }
-        result = jadolint.analyze(**kwargs)
+        result = jadolint.analyze_file(**kwargs)
 
         expected = [
             'Dockerfile 5 DL4000 MAINTAINER is deprecated',
@@ -113,7 +113,7 @@ class TestJadolint(TestCaseAnalyzer):
         kwargs = {
             'file_path': os.path.join(self.tmp_path, DOCKERFILE_TEST)
         }
-        result = jadolint.analyze(**kwargs)
+        result = jadolint.analyze_file(**kwargs)
 
         expected = [
             'debian stretch-slim',
@@ -145,7 +145,7 @@ class TestJadolint(TestCaseAnalyzer):
         kwargs = {
             'file_path': os.path.join(self.tmp_path, ANALYZER_TEST_FILE)
         }
-        result = jadolint.analyze(**kwargs)
+        result = jadolint.analyze_file(**kwargs)
 
         self.assertIn('dependencies', result)
         self.assertListEqual(result['dependencies'], [])
@@ -162,7 +162,7 @@ class TestJadolint(TestCaseAnalyzer):
             'file_path': os.path.join(self.repo_path, DOCKERFILE_TEST)
         }
         with self.assertRaises(GraalError):
-            _ = jadolint.analyze(**kwargs)
+            _ = jadolint.analyze_file(**kwargs)
 
 
 if __name__ == "__main__":
