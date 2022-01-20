@@ -24,7 +24,8 @@
 
 from perceval.utils import DEFAULT_DATETIME, DEFAULT_LAST_DATETIME
 
-from .cocom_analyzer_factory import CoComAnalyzerFactory
+from graal.backends.core.analyzer_composition_factory import AnalyzerCompositionFactory
+
 from graal.graal import (Graal,
                          GraalCommand,
                          DEFAULT_WORKTREE_PATH,
@@ -32,7 +33,9 @@ from graal.graal import (Graal,
                          GraalRepository)
 from graal.backends.core.cocom.compositions.composition_lizard_file import CATEGORY_COCOM_LIZARD_FILE
 
+CATEGORY_PACKAGE = "graal.backends.core.cocom.compositions"
 DEFAULT_CATEGORY = CATEGORY_COCOM_LIZARD_FILE
+
 
 class CoCom(Graal):
     """CoCom Backend"""
@@ -46,7 +49,7 @@ class CoCom(Graal):
                          entrypoint=entrypoint, in_paths=in_paths, out_paths=out_paths,
                          details=details, tag=tag, archive=archive)
 
-        self.__factory = CoComAnalyzerFactory()
+        self.__factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
         self.CATEGORIES = self.__factory.get_categories()
         self.__composer = None
 
@@ -124,11 +127,9 @@ class CoCom(Graal):
         """Extracts the category from a Code item."""
 
         analyzer = item['analyzer']
+        factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
 
-        factory = CoComAnalyzerFactory()
-        composer = factory.get_composer(analyzer)
-
-        return composer.get_category()
+        return factory.get_category_from_kind(analyzer)
 
 
 class CoComCommand(GraalCommand):
@@ -141,4 +142,3 @@ class CoComCommand(GraalCommand):
         """Returns the CoCom argument parser."""
 
         return GraalCommand.setup_cmd_parser(cls.BACKEND)
-        
