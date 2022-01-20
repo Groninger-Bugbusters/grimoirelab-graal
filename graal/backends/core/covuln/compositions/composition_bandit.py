@@ -22,29 +22,3 @@ class CompositionBandit(Composer):
 
     def merge_results(self, results):
         return results[0]
-
-
-# class BanditAnalyzer:
-
-#     def __init__(self, details=False):
-#         self.details = details
-#         self.bandit = Bandit()
-
-#     def analyze(self, folder_path):
-#         """Analyze the content of a folder using Bandit
-
-#         :param folder_path: folder path
-
-#         :returns a dict containing the results of the analysis, like the one below
-#         {
-#           'code_quality': ..,
-#           'modules': [..]
-#         }
-#         """
-#         kwargs = {
-#             'folder_path': folder_path,
-#             'details': self.details
-#         }
-#         analysis = self.bandit.analyze(**kwargs)
-
-#         return analysis

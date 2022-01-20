@@ -21,92 +21,76 @@
 #     inishchith <inishchith@gmail.com>
 #
 
-from graal.backends.core.covuln.covuln_analyzer_factory import CoVulnAnalyzerFactory
-
-from graal.graal import (
-    Graal,
-    GraalCommand,
-    GraalError,
-    DEFAULT_WORKTREE_PATH,
-)
-
 from perceval.utils import DEFAULT_DATETIME, DEFAULT_LAST_DATETIME
+from graal.backends.core.colic.colic_analyzer_factory import CoLicAnalyzerFactory
+
+from graal.graal import (Graal, GraalError,
+                         GraalCommand,
+                         DEFAULT_WORKTREE_PATH, GraalRepository)
 
 
-class CoVuln(Graal):
-    """CoVuln backend.
+class CoLic(Graal):
+    """CoLic backend.
 
-    This class extends the Graal backend. It gathers
-    insights about security vulnerabilities in Python code.
+    This class extends the Graal backend. It gathers license & copyright information
+    using Nomos or Scancode
 
     :param uri: URI of the Git repository
-    :param gitpath: path to the repository or to the log file
+    :param git_path: path to the repository or to the log file
     :param worktreepath: the directory where to store the working tree
-    :param exec_path: path of the executable to perform the analysis
+    :param exec_path: path of the executable
     :param entrypoint: the entrypoint of the analysis
     :param in_paths: the target paths of the analysis
     :param out_paths: the paths to be excluded from the analysis
-    :param details: if enable, it returns fine-grained results
     :param tag: label used to mark the data
     :param archive: archive to store/retrieve items
 
     :raises RepositoryError: raised when there was an error cloning or
         updating the repository.
     """
+    version = '0.6.1'
 
-    version = "0.3.1"
+    def __init__(self, uri, git_path, worktreepath=DEFAULT_WORKTREE_PATH, exec_path=None,
+                 entrypoint=None, in_paths=None, out_paths=None,
+                 tag=None, archive=None):
+        super().__init__(uri, git_path, worktreepath, exec_path=exec_path,
+                         entrypoint=entrypoint, in_paths=in_paths, out_paths=out_paths,
+                         tag=tag, archive=archive)
 
-    def __init__(
-        self,
-        uri,
-        git_path,
-        worktreepath=DEFAULT_WORKTREE_PATH,
-        exec_path=None,
-        entrypoint=None,
-        in_paths=None,
-        out_paths=None,
-        details=False,
-        tag=None,
-        archive=None,
-    ):
-        super().__init__(
-            uri,
-            git_path,
-            worktreepath,
-            exec_path=exec_path,
-            entrypoint=entrypoint,
-            in_paths=in_paths,
-            out_paths=out_paths,
-            details=details,
-            tag=tag,
-            archive=archive,
-        )
+        if not GraalRepository.exists(exec_path):
+            raise GraalError(cause="executable path %s not valid" % exec_path)
 
-        self.__factory = CoVulnAnalyzerFactory()
+        self.__factory = CoLicAnalyzerFactory()
         self.CATEGORIES = self.__factory.get_categories()
         self.__composer = None
 
-    def fetch(
-        self,
-        category,
-        from_date=DEFAULT_DATETIME,
-        to_date=DEFAULT_LAST_DATETIME,
-        branches=None,
-        latest_items=False,
-    ):
-        """Fetch commits and add code vulnerabilities information."""
-
-        items = super().fetch(
-            category,
-            from_date=from_date,
-            to_date=to_date,
-            branches=branches,
-            latest_items=latest_items,
-        )
+    def fetch(self, category,
+              from_date=DEFAULT_DATETIME, to_date=DEFAULT_LAST_DATETIME,
+              branches=None, latest_items=False):
+        """Fetch commits and add license information."""
+        items = super().fetch(category, from_date=from_date, to_date=to_date,
+                              branches=branches, latest_items=latest_items)
 
         self.__composer = self.__factory.get_composer(category)
 
         return items
+
+    def _filter_commit(self, commit):
+        """Filter a commit according to its data (e.g., author, sha, etc.)
+
+        :param commit: a Perceval commit item
+
+        :returns: a boolean value
+        """
+        if not self.in_paths:
+            return False
+
+        for file in commit['files']:
+            for path in self.in_paths:
+                if file['file'].endswith(path):
+                    return False
+
+        return True
 
     def _analyze(self, commit):
         """
@@ -124,8 +108,8 @@ class CoVuln(Graal):
 
         analyzers = self.__composer.get_composition()
         for analyzer in analyzers:
-            sub_analysis = analyzer.analyze(commit=commit, details=self.details,
-                                            in_paths=self.in_paths, worktreepath=self.worktreepath)
+            sub_analysis = analyzer.analyze(commit=commit, details=self.details, in_paths=self.in_paths,
+                                            worktreepath=self.worktreepath, exec_path=self.exec_path)
             results.append(sub_analysis)
 
         merged_results = self.__composer.merge_results(results)
@@ -137,11 +121,9 @@ class CoVuln(Graal):
 
         :param commit: a Graal commit item
         """
-        commit.pop("Author", None)
-        commit.pop("Commit", None)
-        commit.pop("files", None)
-        commit.pop("parents", None)
-        commit.pop("refs", None)
+        commit.pop('files', None)
+        commit.pop('parents', None)
+        commit.pop('refs', None)
 
         commit['analyzer'] = self.__composer.get_kind()
 
@@ -153,13 +135,21 @@ class CoVuln(Graal):
 
         analyzer = item['analyzer']
 
-        factory = CoVulnAnalyzerFactory()
+        factory = CoLicAnalyzerFactory()
         composer = factory.get_composer(analyzer)
 
         return composer.get_category()
 
 
-class CoVulnCommand(GraalCommand):
-    """Class to run CoVuln backend from the command line."""
+class CoLicCommand(GraalCommand):
+    """Class to run CoLic backend from the command line."""
 
-    BACKEND = CoVuln
+    BACKEND = CoLic
+
+    @classmethod
+    def setup_cmd_parser(cls):
+        """Returns the CoLic argument parser."""
+
+        parser = GraalCommand.setup_cmd_parser(cls.BACKEND)
+
+        return parser
