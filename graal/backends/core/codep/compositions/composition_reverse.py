@@ -17,10 +17,31 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # Authors:
-#     Valerio Cosentino <valcos@bitergia.com>
-#     inishchith <inishchith@gmail.com>
+#     wmeijer221 <w.meijer.5@student.rug.nl>
+#     erwindehaan
 #
 
-from ....._version import __version__
+from graal.backends.core.analyzers.reverse import Reverse
+from graal.backends.core.composer import Composer, merge_with_file_name
 
-__version__ = __version__
+PYREVERSE = 'pyreverse'
+CATEGORY_CODEP_PYREVERSE = 'code_dependencies_' + PYREVERSE
+
+
+class CompositionReverse(Composer):
+    """Analyzer Composition for pyreverse."""
+
+    version = '0.1.0'
+
+    def get_category(self):
+        return CATEGORY_CODEP_PYREVERSE
+
+    def get_kind(self):
+        return PYREVERSE
+
+    # TODO: don't use method; change variable.
+    def get_composition(self):
+        return [Reverse()]
+
+    def merge_results(self, results):
+        return results[0]

@@ -95,6 +95,8 @@ setup(name="graal",
           'graal.backends.core.colic',
           'graal.backends.core.covuln.compositions',
           'graal.backends.core.covuln',
+          'graal.backends.core.colang',
+          'graal.backends.core.colang.compositions',
       ],
       namespace_packages=['graal', 'graal.backends'],
       install_requires=[
@@ -105,7 +107,6 @@ setup(name="graal",
           'networkx>=2.1',
           'pydot>=1.2.4',
           'bandit>=1.4.0'
-
       ],
       scripts=[
           'bin/graal'

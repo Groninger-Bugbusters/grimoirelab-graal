@@ -37,13 +37,37 @@ class Jadolint(Analyzer):
     version = '0.2.0'
 
     def __init__(self, exec_path, analysis):
-        if not GraalRepository.exists(exec_path):
+        if not exec_path or not GraalRepository.exists(exec_path):
             raise GraalError(cause="executable path %s not valid" % exec_path)
 
         self.exec_path = exec_path
         self.analysis = analysis
 
     def analyze(self, **kwargs):
+        commit = kwargs["commit"]
+        in_paths = kwargs["in_paths"]
+        worktreepath = kwargs["worktreepath"]
+
+        analysis = {}
+
+        for committed_file in commit['files']:
+            file_path = committed_file['file']
+            if in_paths:
+                found = [p for p in in_paths if file_path.endswith(p)]
+                if not found:
+                    continue
+
+            local_path = worktreepath + '/' + file_path
+            if not GraalRepository.exists(local_path):
+                analysis.update({file_path: {DEPENDENCIES: []}})
+                continue
+
+            dependencies = self.analyze_file(local_path)
+            analysis.update({file_path: dependencies})
+
+        return analysis
+
+    def analyze_file(self, file_path):
         """Get Jadolint results for a Dockerfile.
 
         :param file_path: file path
@@ -51,7 +75,6 @@ class Jadolint(Analyzer):
         """
         results = []
         result = {self.analysis: results}
-        file_path = kwargs['file_path']
 
         if self.analysis == DEPENDENCIES:
             cmd = ['java', '-jar', self.exec_path, file_path, '--deps']

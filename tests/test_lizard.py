@@ -26,7 +26,7 @@ import unittest
 
 from graal.backends.core.analyzers.lizard import Lizard
 
-from .base_analyzer import (TestCaseAnalyzer, ANALYZER_TEST_FILE)
+from base_analyzer import (TestCaseAnalyzer, ANALYZER_TEST_FILE)
 
 
 class TestLizard(TestCaseAnalyzer):

@@ -21,64 +21,17 @@
 #
 
 import unittest
-import random
 
-from graal.backends.core.composer import Composer
-from graal.backends.core.cocom.cocom_analyzer_factory import CoComAnalyzerFactory
 from graal.backends.core.cocom.compositions.composition_lizard_file import CompositionLizardFile
 from graal.backends.core.cocom.compositions.composition_lizard_repository import CompositionLizardRepository
 from graal.backends.core.cocom.compositions.composition_scc_file import CompositionSccFile
 from graal.backends.core.cocom.compositions.composition_scc_repository import CompositionSccRepository
-from graal.graal import GraalError
 
-from .base_analyzer import TestCaseAnalyzer
+from base_analyzer import TestCaseAnalyzer
 
 
-class TestCoComFactory(TestCaseAnalyzer):
+class TestCoComCompositions(TestCaseAnalyzer):
     """Tests CoCom factory."""
-
-    def test_constructor(self):
-        """Tests constructor"""
-
-        fac = CoComAnalyzerFactory()
-        self.assertGreater(len(fac.compositions), 0)
-
-    def test_get_composer_and_build(self):
-        """Tests Get Composer method and the returned compositions."""
-
-        fac = CoComAnalyzerFactory()
-        cats = fac.get_categories()
-
-        self.assertEqual(len(cats), len(fac.compositions))
-
-        for cat in cats:
-            composer = fac.get_composer(cat)
-
-            self.assertTrue(composer)
-            self.assertTrue(type(composer), Composer)
-
-            self.assertEqual(type(composer.get_kind()), str)
-            self.assertEqual(type(composer.get_category()), str)
-            self.assertEqual(type(composer.get_composition()), list)
-
-            c_composition = composer.get_composition()
-            f_composition = fac.build(cat)
-
-            self.assertEqual(len(c_composition), len(f_composition))
-
-            for i in range(len(c_composition)):
-                self.assertEqual(type(c_composition[i]), type(f_composition[i]))
-
-    def test_unknown(self):
-        """Tests methods with unknown category."""
-
-        fac = CoComAnalyzerFactory()
-
-        with self.assertRaises(GraalError):
-            fac.get_composer("unknown")
-
-        with self.assertRaises(GraalError):
-            fac.build("unknown")
 
     def test_lizard_file_merge(self):
         """Tests merge method of the Lizard File composition."""

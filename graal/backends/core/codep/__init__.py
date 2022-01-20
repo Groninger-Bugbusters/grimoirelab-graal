@@ -17,10 +17,10 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # Authors:
-#     Valerio Cosentino <valcos@bitergia.com>
-#     inishchith <inishchith@gmail.com>
 #
 
-from ....._version import __version__
+from .codep import *
+
+from ...._version import __version__
 
 __version__ = __version__

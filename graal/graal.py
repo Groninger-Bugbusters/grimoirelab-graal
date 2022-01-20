@@ -429,7 +429,7 @@ class GraalRepository(GitRepository):
         """Get the extension of a file"""
         
         split = file_path.split(".")
-        return split[-1] if len(split) > 1 else ''
+        return split[-1] if len(split) > 1 else split[0]
 
     @staticmethod
     def files(dir_path):

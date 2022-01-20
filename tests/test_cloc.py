@@ -27,9 +27,10 @@ import unittest.mock
 
 from graal.backends.core.analyzers.cloc import (Cloc, DEFAULT_DIFF_TIMEOUT)
 
-from .base_analyzer import (DOCKERFILE_TEST,
+from base_analyzer import (DOCKERFILE_TEST,
                             ANALYZER_TEST_FILE,
                             TestCaseAnalyzer)
+from graal.graal import GraalError
 
 
 class TestCloc(TestCaseAnalyzer):
@@ -169,7 +170,8 @@ class TestCloc(TestCaseAnalyzer):
             'in_paths': []
         }
 
-        _ = cloc.analyze(**kwargs)
+        with self.assertRaises(GraalError):
+            _ = cloc.analyze(**kwargs)
 
     @unittest.mock.patch('subprocess.check_output')
     def test_analyze_files_error(self, check_output_mock):
@@ -185,7 +187,8 @@ class TestCloc(TestCaseAnalyzer):
             'worktreepath': self.tmp_data_path
         }
 
-        _ = cloc.analyze(**kwargs)
+        with self.assertRaises(GraalError):
+            _ = cloc.analyze(**kwargs)
 
 
 if __name__ == "__main__":

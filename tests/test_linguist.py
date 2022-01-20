@@ -37,7 +37,7 @@ class TestLinguist(TestCaseAnalyzer):
 
         linguist = Linguist()
         kwargs = {
-            'repository_path': self.repo_path,
+            'worktreepath': self.repo_path,
             'details': True
         }
         result = linguist.analyze(**kwargs)
@@ -52,7 +52,7 @@ class TestLinguist(TestCaseAnalyzer):
 
         linguist = Linguist()
         kwargs = {
-            'repository_path': self.repo_path,
+            'worktreepath': self.repo_path,
             'details': False
         }
         result = linguist.analyze(**kwargs)
@@ -70,7 +70,7 @@ class TestLinguist(TestCaseAnalyzer):
 
         linguist = Linguist()
         kwargs = {
-            'repository_path': self.repo_path,
+            'worktreepath': self.repo_path,
             'details': False
         }
         _ = linguist.analyze(**kwargs)

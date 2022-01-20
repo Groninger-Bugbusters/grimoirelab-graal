@@ -23,6 +23,9 @@
 class Composer:
     """Template class for composition of analyzers"""
 
+    def __init__(self, **kwargs):
+        self.kwargs = kwargs
+
     def get_kind(self):
         """Returns more readable name of this composition"""
 
@@ -46,7 +49,7 @@ class Composer:
 
 def merge_with_file_name(results):
     """
-    Merges the results using their file names.
+    Utility method; merges the results using their file names.
 
     :param results: Results that are to be merged.
                     These should be on a file-level.

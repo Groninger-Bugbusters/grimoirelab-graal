@@ -26,17 +26,17 @@ import shutil
 import subprocess
 import tempfile
 import unittest.mock
+from graal.backends.core.codep.compositions.composition_jadolint_dependencies import CATEGORY_CODEP_JADOLINT, CompositionJadolintDependencies
+from graal.backends.core.codep.compositions.composition_reverse import CATEGORY_CODEP_PYREVERSE, CompositionReverse
 
 from graal.graal import GraalCommandArgumentParser
 from graal.backends.core.analyzers.jadolint import Jadolint, DEPENDENCIES
 from graal.backends.core.analyzers.reverse import Reverse
-from graal.backends.core.codep import (CATEGORY_CODEP_PYREVERSE,
-                                       CATEGORY_CODEP_JADOLINT,
-                                       CoDep,
-                                       PyreverseAnalyzer,
-                                       JadolintAnalyzer,
-                                       CoDepCommand,
-                                       logger)
+from graal.backends.core.codep import (CoDep,
+                                       CoDepCommand)
+
+from graal.backends.core.analyzers.reverse import logger
+
 from graal.graal import GraalError
 from perceval.utils import DEFAULT_DATETIME
 from base_analyzer import (TestCaseAnalyzer,
@@ -53,48 +53,48 @@ class TestCoDepBackend(TestCaseRepo):
     def test_fetch_unknown_category(self):
         """Test whether an exception is thrown when the category is unknown"""
 
-        cd = CoDep('http://example.com', self.git_path, self.worktree_path, tag='test')
+        cd = CoDep('http://example.com', self.git_path, self.worktree_path, tag='test', exec_path='')
         with self.assertRaises(GraalError):
             _ = [item for item in cd.fetch(category="unknown")]
 
-    def test_metadata_category(self):
-        """Test metadata_category"""
-        item = {
-            "Author": "Nishchith Shetty <inishchith@gmail.com>",
-            "AuthorDate": "Tue Feb 26 22:06:31 2019 +0530",
-            "Commit": "Nishchith Shetty <inishchith@gmail.com>",
-            "CommitDate": "Tue Feb 26 22:06:31 2019 +0530",
-            "analysis": [],
-            "analyzer": "pyreverse",
-            "commit": "5866a479587e8b548b0cb2d591f3a3f5dab04443",
-            "message": "[copyright] Update copyright dates"
-        }
-        self.assertEqual(CoDep.metadata_category(item), CATEGORY_CODEP_PYREVERSE)
+    # def test_metadata_category(self):
+    #     """Test metadata_category"""
+    #     item = {
+    #         "Author": "Nishchith Shetty <inishchith@gmail.com>",
+    #         "AuthorDate": "Tue Feb 26 22:06:31 2019 +0530",
+    #         "Commit": "Nishchith Shetty <inishchith@gmail.com>",
+    #         "CommitDate": "Tue Feb 26 22:06:31 2019 +0530",
+    #         "analysis": [],
+    #         "analyzer": "pyreverse",
+    #         "commit": "5866a479587e8b548b0cb2d591f3a3f5dab04443",
+    #         "message": "[copyright] Update copyright dates"
+    #     }
+    #     self.assertEqual(CoDep.metadata_category(item), CATEGORY_CODEP_PYREVERSE)
 
-        item = {
-            "Author": "Nishchith Shetty <inishchith@gmail.com>",
-            "AuthorDate": "Tue Feb 26 22:06:31 2019 +0530",
-            "Commit": "Nishchith Shetty <inishchith@gmail.com>",
-            "CommitDate": "Tue Feb 26 22:06:31 2019 +0530",
-            "analysis": [],
-            "analyzer": "jadolint",
-            "commit": "5866a479587e8b548b0cb2d591f3a3f5dab04443",
-            "message": "[copyright] Update copyright dates"
-        }
-        self.assertEqual(CoDep.metadata_category(item), CATEGORY_CODEP_JADOLINT)
+    #     item = {
+    #         "Author": "Nishchith Shetty <inishchith@gmail.com>",
+    #         "AuthorDate": "Tue Feb 26 22:06:31 2019 +0530",
+    #         "Commit": "Nishchith Shetty <inishchith@gmail.com>",
+    #         "CommitDate": "Tue Feb 26 22:06:31 2019 +0530",
+    #         "analysis": [],
+    #         "analyzer": "jadolint",
+    #         "commit": "5866a479587e8b548b0cb2d591f3a3f5dab04443",
+    #         "message": "[copyright] Update copyright dates"
+    #     }
+    #     self.assertEqual(CoDep.metadata_category(item), CATEGORY_CODEP_JADOLINT)
 
-        item = {
-            "Author": "Nishchith Shetty <inishchith@gmail.com>",
-            "AuthorDate": "Tue Feb 26 22:06:31 2019 +0530",
-            "Commit": "Nishchith Shetty <inishchith@gmail.com>",
-            "CommitDate": "Tue Feb 26 22:06:31 2019 +0530",
-            "analysis": [],
-            "analyzer": "unknown",
-            "commit": "5866a479587e8b548b0cb2d591f3a3f5dab04443",
-            "message": "[copyright] Update copyright dates"
-        }
-        with self.assertRaises(GraalError):
-            _ = CoDep.metadata_category(item)
+    #     item = {
+    #         "Author": "Nishchith Shetty <inishchith@gmail.com>",
+    #         "AuthorDate": "Tue Feb 26 22:06:31 2019 +0530",
+    #         "Commit": "Nishchith Shetty <inishchith@gmail.com>",
+    #         "CommitDate": "Tue Feb 26 22:06:31 2019 +0530",
+    #         "analysis": [],
+    #         "analyzer": "unknown",
+    #         "commit": "5866a479587e8b548b0cb2d591f3a3f5dab04443",
+    #         "message": "[copyright] Update copyright dates"
+    #     }
+    #     with self.assertRaises(GraalError):
+    #         _ = CoDep.metadata_category(item)
 
 
 class TestCoDepPyReverseBackend(TestCaseRepo):
@@ -136,6 +136,7 @@ class TestCoDepPyReverseBackend(TestCaseRepo):
         self.assertIn('links', result['packages'])
         self.assertTrue(type(result['packages']['links']), list)
 
+    # TODO move to pyreverse tester?
     def test_fetch_not_existing_module(self):
         """Test whether warning messages are logged when a module is not found"""
 
@@ -270,28 +271,11 @@ class TestDependencyAnalyzer(TestCaseAnalyzer):
     def tearDownClass(cls):
         shutil.rmtree(cls.tmp_path)
 
-    def test_pyreverse_init(self):
-        """Test initialization"""
-
-        dep_analyzer = PyreverseAnalyzer()
-
-        self.assertIsInstance(dep_analyzer, PyreverseAnalyzer)
-        self.assertIsInstance(dep_analyzer.analyzer, Reverse)
-
-    def test_jadolint_init(self):
-        """Test initialization"""
-
-        dep_analyzer = JadolintAnalyzer(JADOLINT_PATH)
-
-        self.assertIsInstance(dep_analyzer, JadolintAnalyzer)
-        self.assertIsInstance(dep_analyzer.analyzer, Jadolint)
-
     def test_analyze_pyreverse(self):
         """Test whether the analyze method works"""
 
-        module_path = os.path.join(self.tmp_path, 'graaltest', 'perceval')
-        dep_analyzer = PyreverseAnalyzer()
-        result = dep_analyzer.analyze(module_path)
+        dep_analyzer = CompositionReverse().get_composition()[0]
+        result = dep_analyzer.analyze(worktreepath=self.tmp_path, entrypoint='graaltest/perceval')
 
         self.assertIn('classes', result)
         self.assertTrue(type(result['classes']), dict)
@@ -304,8 +288,8 @@ class TestDependencyAnalyzer(TestCaseAnalyzer):
         """Test whether the analyze method works"""
 
         file_path = os.path.join(self.tmp_path, DOCKERFILE_TEST)
-        dep_analyzer = JadolintAnalyzer(JADOLINT_PATH)
-        result = dep_analyzer.analyze(file_path)
+        dep_analyzer = CompositionJadolintDependencies(jadolint_exec_path=JADOLINT_PATH).get_composition()[0]
+        result = dep_analyzer.analyze_file(file_path)
 
         expected_deps = [
             'debian stretch-slim',
