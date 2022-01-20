@@ -21,6 +21,7 @@
 #     inishchith <inishchith@gmail.com>
 #
 
+import logging
 import os
 import subprocess
 import tempfile
@@ -29,12 +30,13 @@ import networkx as nx
 from networkx.drawing.nx_pydot import read_dot
 from networkx.readwrite import json_graph
 
-from graal.graal import GraalError
+from graal.graal import GraalError, GraalRepository
 from .analyzer import Analyzer
 
 CLASSES_FILE_NAME = "classes.dot"
 PACKAGES_FILE_NAME = "packages.dot"
 
+logger = logging.getLogger(__name__)
 
 class Reverse(Analyzer):
     """A wrapper for Pyreverse, a tool to extract UML class diagrams and package
@@ -53,7 +55,16 @@ class Reverse(Analyzer):
         :param result: dict of the results of the analysis
         """
         result = {}
-        module_path = kwargs['module_path']
+
+        if not kwargs['entrypoint']:
+            raise GraalError(cause="no valid entrypoint given")
+
+        module_path = os.path.join(kwargs['worktreepath'], kwargs['entrypoint'])
+
+        if not GraalRepository.exists(module_path):
+            logger.warning("module path %s does not exist at commit %s, analysis will be skipped"
+                        % (module_path, kwargs['commit']['commit']))
+            return {}
 
         try:
             subprocess.check_output(['pyreverse', module_path]).decode("utf-8")

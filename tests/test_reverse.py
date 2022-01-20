@@ -39,7 +39,9 @@ class TestReverse(TestCaseAnalyzer):
 
         reverse = Reverse()
         kwargs = {
-            'module_path': os.path.join(self.repo_path, "perceval"),
+            'worktreepath': self.repo_path,
+            'entrypoint': "perceval",
+            # 'module_path': os.path.join(self.repo_path, "perceval"),
         }
         result = reverse.analyze(**kwargs)
 
@@ -63,7 +65,9 @@ class TestReverse(TestCaseAnalyzer):
 
         reverse = Reverse()
         kwargs = {
-            'module_path': os.path.join(self.repo_path, "perceval"),
+            'worktreepath': self.repo_path,
+            'entrypoint': "perceval",
+            # 'module_path': os.path.join(self.repo_path, "perceval"),
         }
         with self.assertRaises(GraalError):
             _ = reverse.analyze(**kwargs)
