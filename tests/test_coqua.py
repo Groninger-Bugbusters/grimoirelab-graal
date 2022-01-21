@@ -26,20 +26,22 @@ import shutil
 import subprocess
 import tempfile
 import unittest.mock
+from graal.backends.core.analyzer_composition_factory import AnalyzerCompositionFactory
+from graal.backends.core.coqua.compositions.composition_flake8 import CATEGORY_COQUA_FLAKE8
+from graal.backends.core.coqua.compositions.composition_jadolint_smells import CATEGORY_COQUA_JADOLINT
 
 from graal.graal import GraalCommandArgumentParser
 from graal.backends.core.analyzers.pylint import PyLint
 from graal.backends.core.analyzers.flake8 import Flake8
 from graal.backends.core.analyzers.jadolint import Jadolint, SMELLS
 from graal.backends.core.coqua import (CATEGORY_COQUA_PYLINT,
-                                       CATEGORY_COQUA_FLAKE8,
-                                       CATEGORY_COQUA_JADOLINT,
-                                       FLAKE8,
                                        CoQua,
-                                       JadolintAnalyzer,
-                                       ModuleAnalyzer,
                                        CoQuaCommand,
-                                       logger)
+                                       CATEGORY_PACKAGE
+                                       )
+import graal.backends.core.analyzers.pylint
+import graal.backends.core.analyzers.flake8
+
 from perceval.utils import DEFAULT_DATETIME
 from graal.graal import GraalError
 from base_analyzer import (TestCaseAnalyzer,
@@ -48,6 +50,8 @@ from base_analyzer import (TestCaseAnalyzer,
                            get_file_path)
 from base_repo import TestCaseRepo
 from utils import JADOLINT_PATH
+
+import perceval.errors
 
 
 class TestCoQuaBackend(TestCaseRepo):
@@ -114,7 +118,7 @@ class TestCoQuaBackend(TestCaseRepo):
         with self.assertRaises(GraalError):
             _ = [item for item in cq.fetch(category=CATEGORY_COQUA_PYLINT)]
 
-        with self.assertRaises(GraalError):
+        with self.assertRaises(perceval.errors.RepositoryError):
             _ = [item for item in cq.fetch(category=CATEGORY_COQUA_FLAKE8)]
 
     def test_fetch_unknown(self):
@@ -132,7 +136,7 @@ class TestCoQuaBackend(TestCaseRepo):
         cq = CoQua('http://example.com', self.git_path,
                    self.worktree_path, entrypoint="unknown")
 
-        with self.assertLogs(logger, level='WARNING') as cm:
+        with self.assertLogs(graal.backends.core.analyzers.pylint.logger, level='WARNING') as cm:
             _ = [item for item in cq.fetch(category=CATEGORY_COQUA_PYLINT)]
 
             self.assertRegex(cm.output[0], '.*does not exist at commit.*')
@@ -302,18 +306,22 @@ class TestJadolintAnalyzer(TestCaseAnalyzer):
     def test_init(self):
         """Test initialization"""
 
-        smells_analyzer = JadolintAnalyzer(JADOLINT_PATH)
+        factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE, jadolint_exec_path=JADOLINT_PATH)
+        composer = factory.get_composer(CATEGORY_COQUA_JADOLINT)
+        smells_analyzer = composer.get_composition()[0]
 
-        self.assertIsInstance(smells_analyzer, JadolintAnalyzer)
-        self.assertIsInstance(smells_analyzer.analyzer, Jadolint)
-        self.assertEqual(smells_analyzer.analyzer.analysis, SMELLS)
+        self.assertIsInstance(smells_analyzer, Jadolint)
+        self.assertEqual(smells_analyzer.analysis, SMELLS)
 
     def test_analyze(self):
         """Test whether the analyze method works"""
 
+        factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE, jadolint_exec_path=JADOLINT_PATH)
+        composer = factory.get_composer(CATEGORY_COQUA_JADOLINT)
+        smells_analyzer = composer.get_composition()[0]
+
         file_path = os.path.join(self.tmp_path, DOCKERFILE_TEST)
-        smells_analyzer = JadolintAnalyzer(JADOLINT_PATH)
-        result = smells_analyzer.analyze(file_path)
+        result = smells_analyzer.analyze_file(file_path)
 
         expected = [
             'Dockerfile 5 DL4000 MAINTAINER is deprecated',
@@ -370,24 +378,16 @@ class TestModuleAnalyzer(TestCaseAnalyzer):
     def tearDownClass(cls):
         shutil.rmtree(cls.tmp_path)
 
-    def test_init(self):
-        """Test initialization"""
-
-        mod_analyzer = ModuleAnalyzer()
-        self.assertIsInstance(mod_analyzer, ModuleAnalyzer)
-        self.assertIsInstance(mod_analyzer.analyzer, PyLint)
-
-        mod_analyzer = ModuleAnalyzer(kind=FLAKE8)
-        self.assertIsInstance(mod_analyzer, ModuleAnalyzer)
-        self.assertIsInstance(mod_analyzer.analyzer, Flake8)
-
     def test_analyze(self):
         """Test whether the analyze method works"""
 
-        module_path = os.path.join(self.tmp_path, 'graaltest', 'perceval')
+        entrypoint = 'graaltest/perceval'
 
-        mod_analyzer = ModuleAnalyzer()
-        result = mod_analyzer.analyze(module_path, self.worktree_path)
+        factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
+        composer = factory.get_composer(CATEGORY_COQUA_PYLINT)
+        mod_analyzer = composer.get_composition()[0]
+
+        result = mod_analyzer.analyze(worktreepath=self.tmp_path, entrypoint=entrypoint, details=False)
         self.assertNotIn('modules', result)
         self.assertIn('quality', result)
         self.assertTrue(type(result['quality']), str)
@@ -396,14 +396,16 @@ class TestModuleAnalyzer(TestCaseAnalyzer):
         self.assertIn('warnings', result)
         self.assertTrue(type(result['warnings']), int)
 
-        mod_analyzer = ModuleAnalyzer(kind=FLAKE8)
-        result = mod_analyzer.analyze(module_path, self.worktree_path)
+        composer = factory.get_composer(CATEGORY_COQUA_FLAKE8)
+        mod_analyzer = composer.get_composition()[0]
+        
+        result = mod_analyzer.analyze(worktreepath=self.tmp_path, entrypoint=entrypoint, details=False)
         self.assertNotIn('lines', result)
         self.assertIn('warnings', result)
         self.assertTrue(type(result['warnings']), int)
 
 
-class TestCoDepCommand(unittest.TestCase):
+class TestCoQuaCommand(unittest.TestCase):
     """CoQuaCommand tests"""
 
     def test_backend_class(self):

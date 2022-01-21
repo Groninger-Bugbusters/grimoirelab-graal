@@ -58,12 +58,23 @@ class Jadolint(Analyzer):
                     continue
 
             local_path = worktreepath + '/' + file_path
-            if not GraalRepository.exists(local_path):
-                analysis.update({file_path: {DEPENDENCIES: []}})
-                continue
 
-            dependencies = self.analyze_file(local_path)
-            analysis.update({file_path: dependencies})
+            if self.analysis == DEPENDENCIES:
+                if not GraalRepository.exists(local_path):
+                    analysis.update({file_path: {DEPENDENCIES: []}})
+                    continue
+
+                dependencies = self.analyze_file(local_path)
+                analysis.update({file_path: dependencies})
+            else:
+                if not GraalRepository.exists(local_path):
+                    analysis.update({file_path: {SMELLS: []}})
+                    continue
+
+                smells = self.analyze_file(local_path)
+                digested_smells = {SMELLS: [smell.replace(worktreepath, '') for smell in smells[SMELLS]]}
+                analysis.update({file_path: digested_smells})
+
 
         return analysis
 
