@@ -74,25 +74,15 @@ def _load_composers_in_package(target_package, **kwargs):
 
     # iterates through all submodules contained in target
     target_module = importlib.import_module(target_package)
-    for submodule in dir(target_module):
-        # ignores all private submodules
-        if submodule.startswith("_"):
-            continue
-
-        # iterates through all attributes in the submodule
-        target_submodule = importlib.import_module(f'{target_package}.{submodule}')
-        for element in dir(target_submodule):
-            klass = getattr(target_submodule, element)
-
-            # filters all non-Composer elements.
-            if not inspect.isclass(klass) \
-                    or not issubclass(klass, Composer) \
-                    or klass is Composer:
+    for name, klass in target_module.__dict__.items(): 
+        if name.startswith("_") \
+            or not inspect.isclass(klass) \
+            or not issubclass(klass, Composer) \
+            or klass is Composer:
                 continue
-
-            # creates instance and adds to result
-            composer = klass(**kwargs)
-            composers[composer.get_category()] = composer
-            kind_to_category[composer.get_kind()] = composer.get_category()
+                
+        composer = klass(**kwargs)
+        composers[composer.get_category()] = composer
+        kind_to_category[composer.get_kind()] = composer.get_category()
 
     return composers, kind_to_category
