@@ -22,7 +22,7 @@
 #
 
 from graal.backends.core.analyzers.jadolint import Jadolint, DEPENDENCIES
-from graal.backends.core.composer import Composer, merge_with_file_name
+from graal.backends.core.composer import Composer
 
 JADOLINT = 'jadolint'
 CATEGORY_CODEP_JADOLINT = 'code_dependencies_' + JADOLINT

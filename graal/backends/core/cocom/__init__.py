@@ -21,7 +21,6 @@
 #     inishchith <inishchith@gmail.com>
 #
 
-from .cocom import *
 
 from ...._version import __version__
 

@@ -22,7 +22,7 @@
 #
 
 from graal.backends.core.analyzers.reverse import Reverse
-from graal.backends.core.composer import Composer, merge_with_file_name
+from graal.backends.core.composer import Composer
 
 PYREVERSE = 'pyreverse'
 CATEGORY_CODEP_PYREVERSE = 'code_dependencies_' + PYREVERSE

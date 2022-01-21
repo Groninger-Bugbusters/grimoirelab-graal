@@ -22,7 +22,7 @@
 #
 
 from graal.backends.core.analyzers.pylint import PyLint
-from graal.backends.core.composer import Composer, merge_with_file_name
+from graal.backends.core.composer import Composer
 
 PYLINT = 'pylint'
 CATEGORY_COQUA_PYLINT = 'code_quality_' + PYLINT

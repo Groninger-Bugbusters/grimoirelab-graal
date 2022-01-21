@@ -19,8 +19,6 @@
 # Authors:
 #
 
-from .colic import *
-from .compositions import *
 
 from ...._version import __version__
 

@@ -68,6 +68,5 @@ class Linguist(Analyzer):
             TODO: add details of breakdown at directory level
             using --breakdown
             '''
-            pass
 
         return results

@@ -25,8 +25,6 @@ from perceval.utils import DEFAULT_DATETIME, DEFAULT_LAST_DATETIME
 from graal.backends.core.analyzer_composition_factory import AnalyzerCompositionFactory
 
 from graal.backends.core.colic.compositions.composition_nomos import CATEGORY_COLIC_NOMOS
-from graal.backends.core.colic.compositions.composition_scancode import CATEGORY_COLIC_SCANCODE
-from graal.backends.core.colic.compositions.composition_scancode_cli import CATEGORY_COLIC_SCANCODE_CLI
 
 CATEGORY_PACKAGE = "graal.backends.core.colic.compositions"
 DEFAULT_CATEGORY = CATEGORY_COLIC_NOMOS

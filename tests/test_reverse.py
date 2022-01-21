@@ -21,7 +21,6 @@
 #     inishchith <inishchith@gmail.com>
 #
 
-import os
 import subprocess
 import unittest.mock
 

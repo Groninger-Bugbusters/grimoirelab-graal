@@ -23,7 +23,9 @@
 import unittest
 
 from graal.backends.core.cocom.compositions.composition_lizard_file import LIZARD_FILE, CATEGORY_COCOM_LIZARD_FILE
-from graal.backends.core.cocom.compositions.composition_lizard_repository import LIZARD_REPOSITORY, CATEGORY_COCOM_LIZARD_REPOSITORY
+from graal.backends.core.cocom.compositions.composition_lizard_repository import (
+    LIZARD_REPOSITORY,
+    CATEGORY_COCOM_LIZARD_REPOSITORY)
 from graal.backends.core.cocom.compositions.composition_scc_file import SCC_FILE, CATEGORY_COCOM_SCC_FILE
 from graal.backends.core.cocom.compositions.composition_scc_repository import SCC_REPOSITORY, CATEGORY_COCOM_SCC_REPOSITORY
 

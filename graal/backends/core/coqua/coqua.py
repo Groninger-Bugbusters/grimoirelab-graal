@@ -22,7 +22,6 @@
 #
 
 import logging
-import os
 from graal.backends.core.analyzer_composition_factory import AnalyzerCompositionFactory
 from graal.backends.core.coqua.compositions.composition_pylint import CATEGORY_COQUA_PYLINT
 
@@ -30,7 +29,6 @@ from graal.backends.core.coqua.compositions.composition_pylint import CATEGORY_C
 from graal.graal import (Graal,
                          GraalCommand,
                          GraalError,
-                         GraalRepository,
                          DEFAULT_WORKTREE_PATH)
 
 from perceval.utils import DEFAULT_DATETIME, DEFAULT_LAST_DATETIME

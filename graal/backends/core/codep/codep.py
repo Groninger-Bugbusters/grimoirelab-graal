@@ -22,18 +22,13 @@
 #
 
 import logging
-import os
 from graal.backends.core.analyzer_composition_factory import AnalyzerCompositionFactory
 from graal.backends.core.codep.compositions.composition_reverse import CATEGORY_CODEP_PYREVERSE
 
 from graal.graal import (Graal,
                          GraalCommand,
                          GraalError,
-                         GraalRepository,
                          DEFAULT_WORKTREE_PATH)
-from graal.backends.core.analyzers.analyzer import Analyzer
-from graal.backends.core.analyzers.jadolint import Jadolint, DEPENDENCIES
-from graal.backends.core.analyzers.reverse import Reverse
 from perceval.utils import DEFAULT_DATETIME, DEFAULT_LAST_DATETIME
 
 CATEGORY_PACKAGE = "graal.backends.core.codep.compositions"

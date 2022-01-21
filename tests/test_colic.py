@@ -27,19 +27,16 @@ import unittest.mock
 from graal.graal import (GraalCommandArgumentParser,
                          GraalError)
 from graal.backends.core.analyzers.nomos import Nomos
-from graal.backends.core.analyzers.scancode import SCANCODE_CLI_EXEC, ScanCode
-from graal.backends.core.colic.colic import CATEGORY_PACKAGE, DEFAULT_CATEGORY
+from graal.backends.core.analyzers.scancode import ScanCode
+from graal.backends.core.colic.colic import CATEGORY_PACKAGE
 from graal.backends.core.colic.compositions.composition_nomos import (
     CATEGORY_COLIC_NOMOS,
-    NOMOS,
 )
 from graal.backends.core.colic.compositions.composition_scancode import (
     CATEGORY_COLIC_SCANCODE,
-    SCANCODE,
 )
 from graal.backends.core.colic.compositions.composition_scancode_cli import (
     CATEGORY_COLIC_SCANCODE_CLI,
-    SCANCODE_CLI,
 )
 from graal.backends.core.colic import (
     CoLic,

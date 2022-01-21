@@ -22,7 +22,7 @@
 #
 
 from graal.backends.core.analyzers.flake8 import Flake8
-from graal.backends.core.composer import Composer, merge_with_file_name
+from graal.backends.core.composer import Composer
 
 FLAKE8 = "flake8"
 CATEGORY_COQUA_FLAKE8 = 'code_quality_' + FLAKE8

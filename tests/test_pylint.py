@@ -21,7 +21,6 @@
 #     Valerio Cosentino <valcos@bitergia.com>
 #
 
-import os
 import subprocess
 import unittest.mock
 

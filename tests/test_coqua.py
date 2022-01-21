@@ -31,8 +31,6 @@ from graal.backends.core.coqua.compositions.composition_flake8 import CATEGORY_C
 from graal.backends.core.coqua.compositions.composition_jadolint_smells import CATEGORY_COQUA_JADOLINT
 
 from graal.graal import GraalCommandArgumentParser
-from graal.backends.core.analyzers.pylint import PyLint
-from graal.backends.core.analyzers.flake8 import Flake8
 from graal.backends.core.analyzers.jadolint import Jadolint, SMELLS
 from graal.backends.core.coqua import (CATEGORY_COQUA_PYLINT,
                                        CoQua,

@@ -22,7 +22,7 @@
 #
 
 from graal.backends.core.analyzers.jadolint import Jadolint, SMELLS
-from graal.backends.core.composer import Composer, merge_with_file_name
+from graal.backends.core.composer import Composer
 
 JADOLINT = 'jadolint'
 CATEGORY_COQUA_JADOLINT = 'code_quality_' + JADOLINT

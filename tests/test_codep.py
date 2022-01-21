@@ -26,12 +26,14 @@ import shutil
 import subprocess
 import tempfile
 import unittest.mock
-from graal.backends.core.codep.compositions.composition_jadolint_dependencies import CATEGORY_CODEP_JADOLINT, CompositionJadolintDependencies
+from graal.backends.core.codep.compositions.composition_jadolint_dependencies import (
+    CATEGORY_CODEP_JADOLINT,
+    CompositionJadolintDependencies
+)
 from graal.backends.core.codep.compositions.composition_reverse import CATEGORY_CODEP_PYREVERSE, CompositionReverse
 
 from graal.graal import GraalCommandArgumentParser
-from graal.backends.core.analyzers.jadolint import Jadolint, DEPENDENCIES
-from graal.backends.core.analyzers.reverse import Reverse
+from graal.backends.core.analyzers.jadolint import DEPENDENCIES
 from graal.backends.core.codep import (CoDep,
                                        CoDepCommand)
 
