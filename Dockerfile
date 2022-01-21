@@ -76,6 +76,7 @@ RUN pip install -r "requirements.txt"
 
 # Dependencies for testing
 RUN pip install coveralls
-RUN gem install github-linguist -v 7.12.2
+# RUN gem install github-linguist -v 7.12.2
+RUN apt-get install -y ruby-github-linguist
 
 RUN ./setup.py install

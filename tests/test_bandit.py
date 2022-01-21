@@ -40,7 +40,7 @@ class TestBandit(TestCaseAnalyzer):
 
         bandit = Bandit()
         kwargs = {
-            'folder_path': os.path.join(self.repo_path),
+            'worktreepath': os.path.join(self.repo_path),
             'details': True
         }
         result = bandit.analyze(**kwargs)
@@ -90,7 +90,7 @@ class TestBandit(TestCaseAnalyzer):
 
         bandit = Bandit()
         kwargs = {
-            'folder_path': os.path.join(self.repo_path, ANALYZER_TEST_FILE),
+            'worktreepath': os.path.join(self.repo_path, ANALYZER_TEST_FILE),
             'details': False
         }
         result = bandit.analyze(**kwargs)
@@ -131,7 +131,7 @@ class TestBandit(TestCaseAnalyzer):
 
         bandit = Bandit()
         kwargs = {
-            'folder_path': os.path.join(self.repo_path, ANALYZER_TEST_FILE),
+            'worktreepath': os.path.join(self.repo_path, ANALYZER_TEST_FILE),
             'details': False
         }
         with self.assertRaises(GraalError):

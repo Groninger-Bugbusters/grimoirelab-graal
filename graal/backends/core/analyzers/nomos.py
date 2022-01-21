@@ -38,10 +38,34 @@ class Nomos(Analyzer):
 
     :param exec_path: path of the executable
     """
-    version = '0.2.0'
+    version = '0.2.1'
 
     def __init__(self):
         self.search_pattern = re.compile(r'license\(s\) .*$')
+
+    def analyze_file(self, exec_path, file_path, local_path): 
+        try:
+            msg = subprocess.check_output([exec_path, local_path]).decode("utf-8")
+        except subprocess.CalledProcessError as e:
+            raise GraalError(cause="Nomos failed at %s, %s" % (file_path, e.output.decode("utf-8")))
+        finally:
+            subprocess._cleanup()
+
+        licenses_raw = re.findall(self.search_pattern, msg)
+
+        licenses = []
+        for license_raw in licenses_raw:
+            license_digested = license_raw.split("license(s)")[1].strip()
+            licenses.append(license_digested)
+
+        license_info = {
+            'file_path': file_path,
+            'licenses': None
+        }
+
+        return license_info
+
+
 
     def analyze(self, **kwargs):
         """
@@ -53,41 +77,28 @@ class Nomos(Analyzer):
         """
 
         exec_path = kwargs['exec_path']
+        commit = kwargs['commit']
+        worktreepath = kwargs['worktreepath']
+        in_paths = kwargs['in_paths']
+
+        
 
         if not GraalRepository.exists(exec_path):
             raise GraalError(cause="executable path %s not valid" % exec_path)
 
         analysis = []
-        license_info = {'licenses': []}
 
-        for committed_file in kwargs['commit']['files']:
+        for committed_file in commit['files']:
             file_path = committed_file['file']
-            local_path = kwargs['worktreepath'] + '/' + file_path
+            local_path = worktreepath + '/' + file_path
 
-            if not is_in_paths(kwargs['in_paths'], file_path):
-                continue
+            if not is_in_paths(in_paths, file_path):
+                return 
 
             if not GraalRepository.exists(local_path) or os.path.isdir(local_path) or os.path.islink(local_path):
                 continue
 
-            try:
-                msg = subprocess.check_output([exec_path, local_path]).decode("utf-8")
-            except subprocess.CalledProcessError as e:
-                raise GraalError(cause="Nomos failed at %s, %s" % (file_path, e.output.decode("utf-8")))
-            finally:
-                subprocess._cleanup()
-
-            licenses_raw = re.findall(self.search_pattern, msg)
-
-            licenses = []
-            for license_raw in licenses_raw:
-                license_digested = license_raw.split("license(s)")[1].strip()
-                licenses.append(license_digested)
-
-            if licenses:
-                license_info['licenses'] = licenses
-
-            license_info.update({'file_path': file_path})
+            license_info = self.analyze_file(exec_path, file_path,local_path)
             analysis.append(license_info)
 
         return analysis
