@@ -29,9 +29,9 @@ import unittest
 from graal.backends.core.analyzers.scc import SCC
 
 from base_analyzer import (DOCKERFILE_TEST,
-                            ANALYZER_TEST_FILE,
-                            ANALYZER_TEST_FOLDER,
-                            TestCaseAnalyzer)
+                           ANALYZER_TEST_FILE,
+                           ANALYZER_TEST_FOLDER,
+                           TestCaseAnalyzer)
 
 
 class TestSCC(TestCaseAnalyzer):

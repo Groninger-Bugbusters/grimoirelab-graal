@@ -36,7 +36,7 @@ from graal.backends.core.covuln.compositions.composition_bandit import CATEGORY_
 from graal.backends.core.covuln import (
     CoVuln,
     CoVulnCommand
-    )
+)
 from perceval.utils import DEFAULT_DATETIME
 from graal.graal import GraalError
 from base_analyzer import TestCaseAnalyzer

@@ -27,6 +27,7 @@ from graal.backends.core.composer import Composer, merge_with_file_name
 JADOLINT = 'jadolint'
 CATEGORY_COQUA_JADOLINT = 'code_quality_' + JADOLINT
 
+
 class CompositionJadolintSmells(Composer):
     """Analyzer Composition for Jadolint Dependencies."""
 

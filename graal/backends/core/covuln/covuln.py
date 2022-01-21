@@ -36,6 +36,7 @@ from perceval.utils import DEFAULT_DATETIME, DEFAULT_LAST_DATETIME
 CATEGORY_PACKAGE = "graal.backends.core.covuln.compositions"
 DEFAULT_CATEGORY = CATEGORY_COVULN
 
+
 class CoVuln(Graal):
     """CoVuln backend.
 

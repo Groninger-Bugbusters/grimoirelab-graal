@@ -75,7 +75,6 @@ class Jadolint(Analyzer):
                 digested_smells = {SMELLS: [smell.replace(worktreepath, '') for smell in smells[SMELLS]]}
                 analysis.update({file_path: digested_smells})
 
-
         return analysis
 
     def analyze_file(self, file_path):

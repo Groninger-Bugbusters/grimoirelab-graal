@@ -47,15 +47,15 @@ class TestScanCode(TestCaseAnalyzer):
 
         scancode = ScanCode()
         kwargs = {
-            'commit':{'files':[{'file':ANALYZER_TEST_FILE}]},
-            'exec_path':SCANCODE_PATH,
+            'commit': {'files': [{'file': ANALYZER_TEST_FILE}]},
+            'exec_path': SCANCODE_PATH,
             'worktreepath': self.tmp_data_path,
-            'in_paths':[]
-            }
+            'in_paths': []
+        }
 
         results = scancode.analyze(**kwargs)
 
-        for result in results: 
+        for result in results:
             self.assertIn('licenses', result)
             self.assertIn('copyrights', result)
 
@@ -67,11 +67,11 @@ class TestScanCode(TestCaseAnalyzer):
 
         scancode = ScanCode()
         kwargs = {
-            'commit':{'files':[{'file':ANALYZER_TEST_FILE}]},
-            'exec_path':SCANCODE_PATH,
+            'commit': {'files': [{'file': ANALYZER_TEST_FILE}]},
+            'exec_path': SCANCODE_PATH,
             'worktreepath': self.tmp_data_path,
-            'in_paths':[]
-            }
+            'in_paths': []
+        }
         with self.assertRaises(GraalError):
             _ = scancode.analyze(**kwargs)
 
@@ -90,14 +90,14 @@ class TestScanCodeCli(TestCaseAnalyzer):
 
         scancode_cli = ScanCode(cli=True)
         kwargs = {
-            'commit':{'files':[{'file':ANALYZER_TEST_FILE}]},
-            'exec_path':SCANCODE_CLI_PATH,
+            'commit': {'files': [{'file': ANALYZER_TEST_FILE}]},
+            'exec_path': SCANCODE_CLI_PATH,
             'worktreepath': self.tmp_data_path,
-            'in_paths':[]
-            }
+            'in_paths': []
+        }
         results = scancode_cli.analyze(**kwargs)
 
-        for result in results: 
+        for result in results:
             self.assertIn('licenses', result)
             self.assertIn('copyrights', result)
 
@@ -107,14 +107,15 @@ class TestScanCodeCli(TestCaseAnalyzer):
         scancode_cli = ScanCode(cli=True)
 
         kwargs = {
-            'commit':{'files':[{'file':ANALYZER_TEST_FILE}]},
-            'exec_path':"/tmp/invalid",
+            'commit': {'files': [{'file': ANALYZER_TEST_FILE}]},
+            'exec_path': "/tmp/invalid",
             'worktreepath': self.tmp_data_path,
-            'in_paths':[]
-            }
-            
+            'in_paths': []
+        }
+
         with self.assertRaises(GraalError):
             _ = scancode_cli.analyze(**kwargs)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -38,6 +38,7 @@ PACKAGES_FILE_NAME = "packages.dot"
 
 logger = logging.getLogger(__name__)
 
+
 class Reverse(Analyzer):
     """A wrapper for Pyreverse, a tool to extract UML class diagrams and package
     dependencies from Python projects.
@@ -63,7 +64,7 @@ class Reverse(Analyzer):
 
         if not GraalRepository.exists(module_path):
             logger.warning("module path %s does not exist at commit %s, analysis will be skipped"
-                        % (module_path, kwargs['commit']['commit']))
+                           % (module_path, kwargs['commit']['commit']))
             return {}
 
         try:

@@ -43,7 +43,7 @@ class Nomos(Analyzer):
     def __init__(self):
         self.search_pattern = re.compile(r'license\(s\) .*$')
 
-    def analyze_file(self, exec_path, file_path, local_path): 
+    def analyze_file(self, exec_path, file_path, local_path):
         try:
             msg = subprocess.check_output([exec_path, local_path]).decode("utf-8")
         except subprocess.CalledProcessError as e:
@@ -65,8 +65,6 @@ class Nomos(Analyzer):
 
         return license_info
 
-
-
     def analyze(self, **kwargs):
         """
         Add information about license
@@ -81,8 +79,6 @@ class Nomos(Analyzer):
         worktreepath = kwargs['worktreepath']
         in_paths = kwargs['in_paths']
 
-        
-
         if not GraalRepository.exists(exec_path):
             raise GraalError(cause="executable path %s not valid" % exec_path)
 
@@ -93,12 +89,12 @@ class Nomos(Analyzer):
             local_path = worktreepath + '/' + file_path
 
             if not is_in_paths(in_paths, file_path):
-                continue 
+                continue
 
             if not GraalRepository.exists(local_path) or os.path.isdir(local_path) or os.path.islink(local_path):
                 continue
 
-            license_info = self.analyze_file(exec_path, file_path,local_path)
+            license_info = self.analyze_file(exec_path, file_path, local_path)
             analysis.append(license_info)
 
         return analysis

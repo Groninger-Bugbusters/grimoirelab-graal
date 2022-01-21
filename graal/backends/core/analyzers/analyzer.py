@@ -38,6 +38,7 @@ class Analyzer:
     def analyze(self, **kwargs):
         raise NotImplementedError
 
+
 def is_in_paths(in_paths, file_path):
     """
     Returns true if the file path is in in_paths.

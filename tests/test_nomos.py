@@ -49,15 +49,14 @@ class TestNomos(TestCaseAnalyzer):
         nomos = Nomos()
         kwargs = {
             'worktreepath': self.tmp_data_path,
-            'commit': {'files':[{'file':ANALYZER_TEST_FILE}, {'file':DOCKERFILE_TEST}]},
-            'exec_path': NOMOS_PATH, 
-            'in_paths':[]
-            }
+            'commit': {'files': [{'file': ANALYZER_TEST_FILE}, {'file': DOCKERFILE_TEST}]},
+            'exec_path': NOMOS_PATH,
+            'in_paths': []
+        }
         results = nomos.analyze(**kwargs)
 
-        for result in results: 
+        for result in results:
             self.assertIn('licenses', result)
-
 
         with self.assertRaises(GraalError):
             kwargs['exec_path'] = "/tmp/invalid"

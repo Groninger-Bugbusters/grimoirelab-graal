@@ -39,7 +39,7 @@ class AnalyzerCompositionFactory:
     def get_composer(self, category):
         """Returns composer object corresponding with category"""
 
-        if not category in self.__composers:
+        if category not in self.__composers:
             raise GraalError(cause=f"Unknown category {category}")
 
         return self.__composers[category]
@@ -52,7 +52,7 @@ class AnalyzerCompositionFactory:
     def get_category_from_kind(self, kind):
         """Returns the category corresponding with the provided kind."""
 
-        if not kind in self.__kind_to_category:
+        if kind not in self.__kind_to_category:
             raise GraalError(cause=f"Unknown category {kind}")
 
         return self.__kind_to_category[kind]
@@ -78,7 +78,7 @@ def _load_composers_in_package(target_package, **kwargs):
         # ignores all private submodules
         if submodule.startswith("_"):
             continue
-        
+
         # iterates through all attributes in the submodule
         target_submodule = importlib.import_module(f'{target_package}.{submodule}')
         for element in dir(target_submodule):
@@ -89,7 +89,7 @@ def _load_composers_in_package(target_package, **kwargs):
                     or not issubclass(klass, Composer) \
                     or klass is Composer:
                 continue
-            
+
             # creates instance and adds to result
             composer = klass(**kwargs)
             composers[composer.get_category()] = composer

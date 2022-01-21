@@ -95,7 +95,7 @@ class SCC(Analyzer):
         :param commit: the changed files of this commit are analyzed
         :param in_paths: the target paths of the analysis
         :param worktreepath: the directory where to store the working tree
-        
+
         :returns: array of dictionaries with SCC analysis results.
         """
 

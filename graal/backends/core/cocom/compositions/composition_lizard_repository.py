@@ -44,4 +44,3 @@ class CompositionLizardRepository(Composer):
 
     def merge_results(self, results):
         return merge_with_file_name(results)
-        

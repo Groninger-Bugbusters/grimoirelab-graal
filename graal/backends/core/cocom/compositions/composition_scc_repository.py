@@ -43,4 +43,3 @@ class CompositionSccRepository(Composer):
 
     def merge_results(self, results):
         return results[0]
-        

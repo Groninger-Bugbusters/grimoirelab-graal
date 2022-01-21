@@ -170,7 +170,7 @@ class Graal(Git):
         icommits = 0
         branch = None
 
-        # the worktree is created from the default branch or 
+        # the worktree is created from the default branch or
         # from the first branch in `branches`. This
         # is needed since currently Graal doesn't support multiple worktrees
         branches = kwargs.get('branches', [])
@@ -427,7 +427,7 @@ class GraalRepository(GitRepository):
     @staticmethod
     def extension(file_path):
         """Get the extension of a file"""
-        
+
         split = file_path.split(".")
         return split[-1] if len(split) > 1 else split[0]
 

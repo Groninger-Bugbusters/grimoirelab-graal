@@ -55,10 +55,10 @@ class PyLint(Analyzer):
         if not GraalRepository.exists(module_path):
             if 'commit' not in kwargs:
                 logger.warning("module path %s does not exist, analysis will be skipped"
-                                % (module_path))
+                               % (module_path))
             else:
                 logger.warning("module path %s does not exist at commit %s, analysis will be skipped"
-                                % (module_path, kwargs['commit']['commit']))
+                               % (module_path, kwargs['commit']['commit']))
 
         try:
             msg = subprocess.check_output(['pylint', '-rn', '--output-format=text', module_path]).decode("utf-8")

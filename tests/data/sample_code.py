@@ -112,6 +112,7 @@ class SlackHandler(logging.Handler):
     References:
     http://docs.python.org/2/library/logging.html#handler-objects
     """
+
     def __init__(self, token, channel, verify=False, **kwargs):
         super(SlackHandler, self).__init__()
         self.client = SlackClient(token, verify)

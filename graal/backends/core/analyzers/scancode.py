@@ -127,7 +127,6 @@ class ScanCode(Analyzer):
         worktreepath = kwargs['worktreepath']
         in_paths = kwargs['in_paths']
 
-
         if not GraalRepository.exists(exec_path):
             raise GraalError(cause="executable path %s not valid" % exec_path)
 

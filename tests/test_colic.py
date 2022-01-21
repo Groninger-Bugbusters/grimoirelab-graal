@@ -32,19 +32,19 @@ from graal.backends.core.colic.colic import CATEGORY_PACKAGE, DEFAULT_CATEGORY
 from graal.backends.core.colic.compositions.composition_nomos import (
     CATEGORY_COLIC_NOMOS,
     NOMOS,
-    )
+)
 from graal.backends.core.colic.compositions.composition_scancode import (
     CATEGORY_COLIC_SCANCODE,
     SCANCODE,
-    )
+)
 from graal.backends.core.colic.compositions.composition_scancode_cli import (
     CATEGORY_COLIC_SCANCODE_CLI,
     SCANCODE_CLI,
-    )
+)
 from graal.backends.core.colic import (
     CoLic,
     CoLicCommand
-    )
+)
 from perceval.utils import DEFAULT_DATETIME
 from base_analyzer import (ANALYZER_TEST_FILE, ANALYZER_TEST_FOLDER,
                            TestCaseAnalyzer)
@@ -252,16 +252,15 @@ class TestLicenseAnalyzer(TestCaseAnalyzer):
         license_analyzer = composer.get_composition()[0]
         self.assertIsInstance(license_analyzer, ScanCode)
 
-
     def test_analyze(self):
         """Test whether the analyze method works"""
         factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
 
         kwargs = {
-            'commit':{'files': [{'file': ANALYZER_TEST_FILE}]},
-            'exec_path':NOMOS_PATH, 
-            'worktreepath': ANALYZER_TEST_FOLDER, 
-            'in_paths':[]
+            'commit': {'files': [{'file': ANALYZER_TEST_FILE}]},
+            'exec_path': NOMOS_PATH,
+            'worktreepath': ANALYZER_TEST_FOLDER,
+            'in_paths': []
         }
 
         # test colic nomos
@@ -272,8 +271,7 @@ class TestLicenseAnalyzer(TestCaseAnalyzer):
         for result in analysis:
             self.assertIn('licenses', result)
 
-
-        # test colic scancode 
+        # test colic scancode
         composer = factory.get_composer(CATEGORY_COLIC_SCANCODE)
         license_analyzer = composer.get_composition()[0]
         self.assertIsInstance(license_analyzer, ScanCode)
@@ -285,15 +283,14 @@ class TestLicenseAnalyzer(TestCaseAnalyzer):
             self.assertIn('licenses', result)
             self.assertIn('copyrights', result)
 
-
         # test colic scancode cli
         composer = factory.get_composer(CATEGORY_COLIC_SCANCODE_CLI)
         license_analyzer = composer.get_composition()[0]
 
-        kwargs['exec_path']=SCANCODE_CLI_PATH
+        kwargs['exec_path'] = SCANCODE_CLI_PATH
         analysis = license_analyzer.analyze(**kwargs)
 
-        for result in analysis: 
+        for result in analysis:
             self.assertIn('licenses', result)
             self.assertIn('copyrights', result)
 

@@ -32,7 +32,7 @@ from graal.graal import (Graal,
                          GraalError,
                          GraalRepository,
                          DEFAULT_WORKTREE_PATH)
-                         
+
 from perceval.utils import DEFAULT_DATETIME, DEFAULT_LAST_DATETIME
 
 CATEGORY_PACKAGE = "graal.backends.core.coqua.compositions"
@@ -63,7 +63,6 @@ class CoQua(Graal):
     """
     version = '0.4.0'
 
-    
     def __init__(self, uri, git_path, worktreepath=DEFAULT_WORKTREE_PATH, exec_path=None,
                  entrypoint=None, in_paths=None, out_paths=None, details=False,
                  tag=None, archive=None):
@@ -126,7 +125,6 @@ class CoQua(Graal):
             results.append(sub_analysis)
 
         merged_results = self.__composer.merge_results(results)
-
 
         return merged_results
 

@@ -28,8 +28,8 @@ import unittest.mock
 from graal.backends.core.analyzers.cloc import (Cloc, DEFAULT_DIFF_TIMEOUT)
 
 from base_analyzer import (DOCKERFILE_TEST,
-                            ANALYZER_TEST_FILE,
-                            TestCaseAnalyzer)
+                           ANALYZER_TEST_FILE,
+                           TestCaseAnalyzer)
 from graal.graal import GraalError
 
 

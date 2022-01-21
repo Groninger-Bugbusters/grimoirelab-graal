@@ -398,7 +398,7 @@ class TestModuleAnalyzer(TestCaseAnalyzer):
 
         composer = factory.get_composer(CATEGORY_COQUA_FLAKE8)
         mod_analyzer = composer.get_composition()[0]
-        
+
         result = mod_analyzer.analyze(worktreepath=self.tmp_path, entrypoint=entrypoint, details=False)
         self.assertNotIn('lines', result)
         self.assertIn('warnings', result)

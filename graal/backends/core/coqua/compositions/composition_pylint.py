@@ -27,6 +27,7 @@ from graal.backends.core.composer import Composer, merge_with_file_name
 PYLINT = 'pylint'
 CATEGORY_COQUA_PYLINT = 'code_quality_' + PYLINT
 
+
 class CompositionPylint(Composer):
     """Analyzer Composition for PyLint Dependencies."""
 
