@@ -22,7 +22,8 @@
 #
 
 
-from .colang import * 
+# flake8: noqa
+from .colang import *
 from .compositions import *
 from graal._version import __version__
 

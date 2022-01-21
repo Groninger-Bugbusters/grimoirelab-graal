@@ -20,6 +20,7 @@
 #
 
 
+# flake8: noqa
 from .composition_bandit import *
 from graal._version import __version__
 

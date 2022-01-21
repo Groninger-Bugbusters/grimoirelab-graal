@@ -20,6 +20,7 @@
 #
 
 
+# flake8: noqa
 from .coqua import *
 from .compositions import *
 

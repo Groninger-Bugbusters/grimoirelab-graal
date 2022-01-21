@@ -19,6 +19,8 @@
 # Authors:
 #
 
+
+# flake8: noqa
 from .composition_nomos import *
 from .composition_scancode import *
 from .composition_scancode_cli import *

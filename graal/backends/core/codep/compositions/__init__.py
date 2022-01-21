@@ -22,6 +22,7 @@
 #
 
 
+# flake8: noqa
 from .composition_jadolint_dependencies import *
 from .composition_reverse import *
 from graal._version import __version__

@@ -20,6 +20,7 @@
 #
 
 
+# flake8: noqa
 from .colic import *
 from .compositions import *
 from graal._version import __version__

@@ -22,6 +22,7 @@
 #
 
 
+# flake8: noqa
 from .composition_cloc import *
 from .composition_linguist import *
 from graal._version import __version__

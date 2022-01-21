@@ -20,7 +20,8 @@
 #
 
 
-from .codep import * 
+# flake8: noqa
+from .codep import *
 from .compositions import *
 from graal._version import __version__
 

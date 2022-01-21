@@ -21,6 +21,8 @@
 #     inishchith <inishchith@gmail.com>
 #
 
+
+# flake8: noqa
 from .composition_lizard_file import *
 from .composition_lizard_repository import *
 from .composition_scc_file import *

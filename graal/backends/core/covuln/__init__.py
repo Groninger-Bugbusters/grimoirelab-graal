@@ -20,6 +20,7 @@
 #
 
 
+# flake8: noqa
 from .covuln import *
 from .compositions import *
 from graal._version import __version__

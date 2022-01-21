@@ -20,6 +20,7 @@
 #
 
 
+# flake8: noqa
 from .composition_flake8 import *
 from .composition_jadolint_smells import *
 from .composition_pylint import *
