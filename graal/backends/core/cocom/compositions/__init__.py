@@ -21,6 +21,10 @@
 #     inishchith <inishchith@gmail.com>
 #
 
-from ....._version import __version__
+from composition_lizard_file import *
+from composition_lizard_repository import *
+from composition_scc_file import *
+from composition_scc_repository import *
+from graal._version import __version__
 
 __version__ = __version__

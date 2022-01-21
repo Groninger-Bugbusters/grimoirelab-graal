@@ -21,6 +21,9 @@
 #     inishchith <inishchith@gmail.com>
 #
 
-from ....._version import __version__
+
+from composition_cloc import *
+from composition_linguist import *
+from graal._version import __version__
 
 __version__ = __version__
