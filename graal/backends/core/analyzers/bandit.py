@@ -39,12 +39,12 @@ class Bandit(Analyzer):
     def analyze(self, **kwargs):
         """Add security issue data using Bandit.
 
-        :param folder_path: folder path
+        :param worktreepath: folder path
         :param details: if True, it returns information about single vulnerabilities
 
         :returns result: dict of the results of the analysis
         """
-        folder_path = kwargs['folder_path']
+        folder_path = kwargs['worktreepath']
         details = kwargs['details']
 
         try:
