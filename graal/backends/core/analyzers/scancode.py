@@ -123,6 +123,10 @@ class ScanCode(Analyzer):
         """
 
         exec_path = kwargs['exec_path']
+        commit = kwargs['commit']
+        worktreepath = kwargs['worktreepath']
+        in_paths = kwargs['in_paths']
+
 
         if not GraalRepository.exists(exec_path):
             raise GraalError(cause="executable path %s not valid" % exec_path)
@@ -136,11 +140,11 @@ class ScanCode(Analyzer):
         analysis = []
         files_to_process = []
 
-        for committed_file in kwargs['commit']['files']:
+        for committed_file in commit['files']:
             file_path = committed_file['file']
-            local_path = kwargs['worktreepath'] + '/' + file_path
+            local_path = worktreepath + '/' + file_path
 
-            if not is_in_paths(kwargs['in_paths'], file_path):
+            if not is_in_paths(in_paths, file_path):
                 continue
 
             if not GraalRepository.exists(local_path) or os.path.isdir(local_path) or os.path.islink(local_path):

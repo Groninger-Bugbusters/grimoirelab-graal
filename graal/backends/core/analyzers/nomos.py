@@ -93,7 +93,7 @@ class Nomos(Analyzer):
             local_path = worktreepath + '/' + file_path
 
             if not is_in_paths(in_paths, file_path):
-                return 
+                continue 
 
             if not GraalRepository.exists(local_path) or os.path.isdir(local_path) or os.path.islink(local_path):
                 continue
