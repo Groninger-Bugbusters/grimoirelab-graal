@@ -22,8 +22,8 @@
 #
 
 
-from composition_jadolint_dependencies import *
-from composition_reverse import *
+from .composition_jadolint_dependencies import *
+from .composition_reverse import *
 from graal._version import __version__
 
 __version__ = __version__

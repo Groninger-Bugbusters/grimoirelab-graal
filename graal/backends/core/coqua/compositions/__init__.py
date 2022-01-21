@@ -20,9 +20,9 @@
 #
 
 
-from composition_flake8 import *
-from composition_jadolint_smells import *
-from composition_pylint import *
+from .composition_flake8 import *
+from .composition_jadolint_smells import *
+from .composition_pylint import *
 
 from ....._version import __version__
 

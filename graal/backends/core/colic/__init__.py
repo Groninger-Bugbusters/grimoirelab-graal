@@ -20,8 +20,8 @@
 #
 
 
-from colic import *
-from compositions import *
+from .colic import *
+from .compositions import *
 from graal._version import __version__
 
 __version__ = __version__

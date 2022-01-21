@@ -19,9 +19,9 @@
 # Authors:
 #
 
-from composition_nomos import *
-from composition_scancode import *
-from composition_scancode_cli import *
+from .composition_nomos import *
+from .composition_scancode import *
+from .composition_scancode_cli import *
 from graal._version import __version__
 
 __version__ = __version__

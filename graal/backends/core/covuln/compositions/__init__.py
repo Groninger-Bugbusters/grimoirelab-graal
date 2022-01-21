@@ -20,7 +20,7 @@
 #
 
 
-from composition_bandit import *
+from .composition_bandit import *
 from graal._version import __version__
 
 __version__ = __version__
