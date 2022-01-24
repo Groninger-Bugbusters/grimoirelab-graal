@@ -147,53 +147,6 @@ class CoDep(Graal):
         return factory.get_category_from_kind(analyzer)
 
 
-# class PyreverseAnalyzer(Analyzer):
-#     """Class to obtain a graph representation of package and class dependencies information
-#     from a Python module. Such a representation can be then used to plot an UML diagram using common
-#     visualization libraries.
-#     """
-
-#     def __init__(self):
-#         self.analyzer = Reverse()
-
-#     def analyze(self, module_path):
-#         """Analyze the content of a Python project using Pyreverse
-
-#         :param module_path: folder path
-
-#         :returns a dict containing the results of the analysis, like the one below
-#         {
-#           'image_path': ..
-#         }
-#         """
-#         kwargs = {'module_path': module_path}
-#         analysis = self.analyzer.analyze(**kwargs)
-
-#         return analysis
-
-
-# class JadolintAnalyzer(Analyzer):
-#     """Class to obtain a list of dependencies extracted from Dockerfiles."""
-
-#     def __init__(self, exec_path, analysis=DEPENDENCIES):
-#         self.analyzer = Jadolint(exec_path, analysis=analysis)
-
-#     def analyze(self, file_path):
-#         """Analyze the content of a Python project using Jadolint
-
-#         :param file_path: path of the target file
-
-#         :returns a dict containing the results of the analysis, like the one below
-#         {
-#           'image_path': ..
-#         }
-#         """
-#         kwargs = {'file_path': file_path}
-#         analysis = self.analyzer.analyze(**kwargs)
-
-#         return analysis
-
-
 class CoDepCommand(GraalCommand):
     """Class to run CoDep backend from the command line."""
 
