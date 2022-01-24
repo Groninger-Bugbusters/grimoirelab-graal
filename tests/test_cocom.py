@@ -25,8 +25,17 @@
 import os
 import unittest
 import unittest.mock
+from perceval.utils import DEFAULT_DATETIME
 
 from graal.graal import GraalCommandArgumentParser, GraalError
+
+from graal.backends.core.cocom.cocom import CATEGORY_PACKAGE
+from graal.backends.core.analyzer_composition_factory import AnalyzerCompositionFactory
+
+from graal.backends.core.analyzers.cloc import Cloc
+from graal.backends.core.analyzers.lizard import Lizard
+from graal.backends.core.analyzers.scc import SCC
+
 from graal.backends.core.cocom.compositions.composition_lizard_file import (CATEGORY_COCOM_LIZARD_FILE, LIZARD_FILE)
 from graal.backends.core.cocom.compositions.composition_lizard_repository import (
     CATEGORY_COCOM_LIZARD_REPOSITORY, LIZARD_REPOSITORY)
@@ -34,8 +43,8 @@ from graal.backends.core.cocom.compositions.composition_scc_file import (CATEGOR
 from graal.backends.core.cocom.compositions.composition_scc_repository import (CATEGORY_COCOM_SCC_REPOSITORY, SCC_REPOSITORY)
 
 from graal.backends.core.cocom import (CoCom, CoComCommand)
-from perceval.utils import DEFAULT_DATETIME
 
+from base_analyzer import ANALYZER_TEST_FILE, TestCaseAnalyzer
 from base_repo import TestCaseRepo
 
 
@@ -218,6 +227,165 @@ class TestCoComBackend(TestCaseRepo):
         }
         with self.assertRaises(GraalError):
             _ = CoCom.metadata_category(item)
+
+
+class TestFileAnalyzer(TestCaseAnalyzer):
+    """FileAnalyzer tests"""
+
+    def test_init(self):
+        """Test initialization"""
+
+        factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
+
+        # Lizard file
+        composer = factory.get_composer(CATEGORY_COCOM_LIZARD_FILE)
+        composition = composer.get_composition()
+
+        self.assertEqual(len(composition), 2)
+
+        cloc = [entry for entry in composition if type(entry) == Cloc]
+        self.assertEqual(len(cloc), 1)
+        cloc = cloc[0]
+        self.assertEqual(cloc.analyze, cloc.analyze_files)
+
+        lizard = [entry for entry in composition if type(entry) == Lizard]
+        self.assertEqual(len(lizard), 1)
+        lizard = lizard[0]
+        self.assertEqual(lizard.analyze, lizard.analyze_files)
+
+        # SCC file
+        composer = factory.get_composer(CATEGORY_COCOM_SCC_FILE)
+        composition = composer.get_composition()
+
+        self.assertEqual(len(composition), 1)
+        scc = composition[0]
+        self.assertIsNotNone(scc)
+        self.assertIsInstance(scc, SCC)
+        self.assertEqual(scc.analyze, scc.analyze_files)
+
+    def test_analyze_no_functions(self):
+        """Test whether the analyze method works"""
+
+        factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
+        composer = factory.get_composer(CATEGORY_COCOM_LIZARD_FILE)
+        composition = composer.get_composition()
+
+        kwargs = {
+            'commit': {'files': [{'file': ANALYZER_TEST_FILE}]},
+            'details': False,
+            'worktreepath': self.tmp_data_path,
+            'in_paths': []
+        }
+
+        results = [analyzer.analyze(**kwargs) for analyzer in composition]
+        merged_results = composer.merge_results(results)
+
+        for analysis in merged_results:
+            self.assertNotIn('funs', analysis)
+            self.assertIn('ccn', analysis)
+            self.assertIn('avg_loc', analysis)
+            self.assertIn('avg_tokens', analysis)
+            self.assertIn('loc', analysis)
+            self.assertIn('tokens', analysis)
+            self.assertIn('blanks', analysis)
+            self.assertIn('comments', analysis)
+
+    def test_analyze_functions(self):
+        """Test whether the analyze method returns functions information"""
+
+        factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
+        composer = factory.get_composer(CATEGORY_COCOM_LIZARD_FILE)
+        composition = composer.get_composition()
+
+        kwargs = {
+            'commit': {'files': [{'file': ANALYZER_TEST_FILE}]},
+            'details': True,
+            'worktreepath': self.tmp_data_path,
+            'in_paths': []
+        }
+
+        results = [analyzer.analyze(**kwargs) for analyzer in composition]
+        merged_results = composer.merge_results(results)
+
+        for analysis in merged_results:
+            self.assertIn('ccn', analysis)
+            self.assertIn('avg_loc', analysis)
+            self.assertIn('avg_tokens', analysis)
+            self.assertIn('loc', analysis)
+            self.assertIn('tokens', analysis)
+            self.assertIn('blanks', analysis)
+            self.assertIn('comments', analysis)
+            self.assertIn('funs', analysis)
+
+            for fd in analysis['funs']:
+                self.assertIn('ccn', fd)
+                self.assertIn('tokens', fd)
+                self.assertIn('loc', fd)
+                self.assertIn('lines', fd)
+                self.assertIn('name', fd)
+                self.assertIn('args', fd)
+                self.assertIn('start', fd)
+                self.assertIn('end', fd)
+
+
+class TestRepositoryAnalyzer(TestCaseAnalyzer):
+    """RepositoryAnalyzer tests"""
+
+    def test_init(self):
+        """Test initialization"""
+
+        factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
+
+        # Lizard repository
+        composer = factory.get_composer(CATEGORY_COCOM_LIZARD_REPOSITORY)
+        composition = composer.get_composition()
+
+        cloc = [entry for entry in composition if type(entry) == Cloc]
+        self.assertEqual(len(cloc), 1)
+        cloc = cloc[0]
+        self.assertIsNotNone(cloc)
+        self.assertEqual(cloc.analyze, cloc.analyze_repository)
+
+        lizard = [entry for entry in composition if type(entry) == Lizard]
+        self.assertEqual(len(lizard), 1)
+        lizard = lizard[0]
+        self.assertIsNotNone(lizard)
+        self.assertEqual(lizard.analyze, lizard.analyze_repository)
+
+        # SCC repository
+        composer = factory.get_composer(CATEGORY_COCOM_SCC_REPOSITORY)
+        composition = composer.get_composition()
+        self.assertEqual(len(composition), 1)
+        scc = composition[0]
+        self.assertIsInstance(scc, SCC)
+        self.assertEqual(scc.analyze, scc.analyze_repository)
+
+    def test_analyze(self):
+        """Test whether the analyze method works"""
+
+        factory = AnalyzerCompositionFactory(CATEGORY_PACKAGE)
+        composer = factory.get_composer(CATEGORY_COCOM_LIZARD_REPOSITORY)
+        composition = composer.get_composition()
+
+        kwargs = {
+            'commit': {'files': [{'file': ANALYZER_TEST_FILE}]},
+            'details': False,
+            'worktreepath': self.tmp_data_path,
+            'in_paths': [ANALYZER_TEST_FILE]
+        }
+
+        results = [analyzer.analyze(**kwargs) for analyzer in composition]
+        merged_results = composer.merge_results(results)
+
+        for file_analysis in merged_results:
+            self.assertIn('num_funs', file_analysis)
+            self.assertIn('ccn', file_analysis)
+            self.assertIn('loc', file_analysis)
+            self.assertIn('tokens', file_analysis)
+            self.assertIn('file_path', file_analysis)
+            self.assertIn('in_commit', file_analysis)
+            self.assertIn('blanks', file_analysis)
+            self.assertIn('comments', file_analysis)
 
 
 class TestCoComCommand(unittest.TestCase):
