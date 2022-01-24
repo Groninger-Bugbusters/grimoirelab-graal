@@ -35,7 +35,7 @@ from graal.backends.core.colang.colang import CoLang, CoLangCommand, CATEGORY_PA
 from graal.backends.core.analyzers.linguist import Linguist
 from graal.backends.core.analyzers.cloc import Cloc
 
-from graal.backends.core.colang.compositions.composition_linguist import CATEGORY_COLANG_LINGUIST, LINGUIST
+from graal.backends.core.colang.compositions.composition_linguist import CATEGORY_COLANG_LINGUIST
 from graal.backends.core.colang.compositions.composition_cloc import CATEGORY_COLANG_CLOC
 from graal.graal import GraalError, GraalCommandArgumentParser
 
@@ -195,7 +195,7 @@ class TestRepositoryAnalyzer(TestCaseAnalyzer):
         composition = composer.get_composition()
 
         kwargs = {
-            'worktreepath': self.origin_path, 
+            'worktreepath': self.origin_path,
             'details': False
         }
 
@@ -205,14 +205,14 @@ class TestRepositoryAnalyzer(TestCaseAnalyzer):
         self.assertIn('Python', results)
         self.assertTrue(type(results['Python']), float)
         self.assertNotIn('breakdown', results)
-        
+
         # cloc
         composer = factory.get_composer(CATEGORY_COLANG_CLOC)
         composition = composer.get_composition()
 
         kwargs = {
             'in_paths': [ANALYZER_TEST_FILE],
-            'worktreepath': self.origin_path, 
+            'worktreepath': self.origin_path,
         }
 
         results = [analyzer.analyze(**kwargs) for analyzer in composition]
@@ -227,6 +227,7 @@ class TestRepositoryAnalyzer(TestCaseAnalyzer):
             self.assertTrue(type(result['loc']), int)
             self.assertIn('total_files', result)
             self.assertTrue(type(result['total_files']), int)
+
 
 class TestCoLangCommand(unittest.TestCase):
     """CoLangCommand tests"""
