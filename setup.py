@@ -91,6 +91,8 @@ setup(name="graal",
           'graal.backends.core.analyzers',
           'graal.backends.core.colic',
           'graal.backends.core.colic.compositions'
+          'graal.backends.core.covuln',
+          'graal.backends.core.covuln.compositions',
       ],
       namespace_packages=['graal', 'graal.backends'],
       install_requires=[
