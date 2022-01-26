@@ -52,7 +52,7 @@ class CoDep(Graal):
     :raises RepositoryError: raised when there was an error cloning or
         updating the repository.
     """
-    version = '0.4.0'
+    version = '0.4.1'
 
     def __init__(self, uri, git_path, worktreepath=DEFAULT_WORKTREE_PATH, exec_path=None,
                  entrypoint=None, in_paths=None, out_paths=None, details=False,

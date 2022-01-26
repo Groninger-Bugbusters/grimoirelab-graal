@@ -44,7 +44,7 @@ class Reverse(Analyzer):
     """A wrapper for Pyreverse, a tool to extract UML class diagrams and package
     dependencies from Python projects.
     """
-    version = '0.1.0'
+    version = '0.1.1'
 
     def __init__(self):
         self.tmp_path = tempfile.mkdtemp(prefix='codep_graal_')

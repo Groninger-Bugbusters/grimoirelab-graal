@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 class Flake8(Analyzer):
     """A wrapper for Flake8, a source code style checker for Python."""
 
-    version = '0.1.0'
+    version = '0.1.1'
 
     def analyze(self, **kwargs):
         """Add quality checks data using Flake8.

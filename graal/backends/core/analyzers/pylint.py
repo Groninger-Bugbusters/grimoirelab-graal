@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 class PyLint(Analyzer):
     """A wrapper for Pylint, a source code, bug and quality checker for Python."""
 
-    version = '0.2.1'
+    version = '0.2.2'
 
     def analyze(self, **kwargs):
         """Add quality checks data using Pylint.

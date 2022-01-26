@@ -35,7 +35,7 @@ SMELLS = 'smells'
 class Jadolint(Analyzer):
     """A wrapper for Jadolint, a tool to extract dependencies and smells from Dockerfiles."""
 
-    version = '0.2.0'
+    version = '0.2.1'
 
     def __init__(self, analysis):
         self.analysis = analysis
