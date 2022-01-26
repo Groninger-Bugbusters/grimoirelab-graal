@@ -42,7 +42,8 @@ class Flake8(Analyzer):
 
     def analyze(self, **kwargs):
         """Add quality checks data using Flake8.
-        :param module_path: module path
+        :param worktreepath: the directory where to store the working tree
+        :param entrypoint: the entrypoint of the analysis
         :param details: if True, it returns information about single commit
         :returns result: dict of the results of the analysis
         """

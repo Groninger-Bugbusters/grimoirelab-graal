@@ -41,6 +41,14 @@ class Jadolint(Analyzer):
         self.analysis = analysis
 
     def analyze(self, **kwargs):
+        """Get Jadolint results for a Dockerfile.
+        :param exec_path: path of the executable to perform the analysis
+        :param commit: a Graal commit item
+        :param in_paths: the target paths of the analysis
+        :param worktreepath: the directory where the working tree is stored
+        :param result: dict of the results of the analysis
+        """
+
         exec_path = kwargs["exec_path"]
         commit = kwargs["commit"]
         in_paths = kwargs["in_paths"]
@@ -81,6 +89,7 @@ class Jadolint(Analyzer):
     def analyze_file(self, file_path, exec_path):
         """Get Jadolint results for a Dockerfile.
         :param file_path: file path
+        :param exec_path: path of the executable to perform the analysis
         :param result: dict of the results of the analysis
         """
         results = []

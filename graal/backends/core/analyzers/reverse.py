@@ -52,7 +52,8 @@ class Reverse(Analyzer):
 
     def analyze(self, **kwargs):
         """Get a UML class diagrams from a Python project.
-        :param module_path: module path
+        :param worktreepath: the directory where to store the working tree
+        :param entrypoint: the entrypoint of the analysis
         :param result: dict of the results of the analysis
         """
         result = {}

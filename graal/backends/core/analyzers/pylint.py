@@ -41,7 +41,8 @@ class PyLint(Analyzer):
 
     def analyze(self, **kwargs):
         """Add quality checks data using Pylint.
-        :param module_path: module path
+        :param worktreepath: the directory where to store the working tree
+        :param entrypoint: the entrypoint of the analysis
         :param details: if True, it returns information about single modules
         :returns result: dict of the results of the analysis
         """
