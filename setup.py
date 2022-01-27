@@ -89,14 +89,18 @@ setup(name="graal",
           'graal.backends',
           'graal.backends.core',
           'graal.backends.core.analyzers',
-          'graal.backends.core.colic',
-          'graal.backends.core.colic.compositions'
-          'graal.backends.core.covuln',
-          'graal.backends.core.covuln.compositions',
           'graal.backends.core.cocom',
           'graal.backends.core.cocom.compositions',
+          'graal.backends.core.codep',
+          'graal.backends.core.codep.compositions',
           'graal.backends.core.colang',
-          'graal.backends.core.colang.compositions'
+          'graal.backends.core.colang.compositions',
+          'graal.backends.core.colic',
+          'graal.backends.core.colic.compositions',
+          'graal.backends.core.coqua',
+          'graal.backends.core.coqua.compositions',
+          'graal.backends.core.covuln',
+          'graal.backends.core.covuln.compositions'
       ],
       namespace_packages=['graal', 'graal.backends'],
       install_requires=[
