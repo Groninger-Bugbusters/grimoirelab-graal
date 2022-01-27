@@ -25,7 +25,7 @@ import subprocess
 
 from graal.graal import (GraalError,
                          GraalRepository)
-from .analyzer import Analyzer
+from .analyzer import Analyzer, is_in_paths
 
 
 DEPENDENCIES = 'dependencies'
@@ -61,10 +61,8 @@ class Jadolint(Analyzer):
 
         for committed_file in commit['files']:
             file_path = committed_file['file']
-            if in_paths:
-                found = [p for p in in_paths if file_path.endswith(p)]
-                if not found:
-                    continue
+            if not is_in_paths(in_paths, file_path):
+                continue
 
             local_path = worktreepath + '/' + file_path
 
