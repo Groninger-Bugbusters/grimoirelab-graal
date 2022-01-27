@@ -17,15 +17,30 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 # Authors:
-#     Valerio Cosentino <valcos@bitergia.com>
-#     inishchith <inishchith@gmail.com>
 #     Groninger Bugbusters <w.meijer.5@student.rug.nl>
 #
 
+from graal.backends.core.analyzers.new_analyzer import Bandit
+from graal.backends.core.composer import Composer
 
-# flake8: noqa
-from .composition_bandit import *
-from .composition_new_analyzer import *
-from graal._version import __version__
 
-__version__ = __version__
+BANDIT = 'new_bandit'
+CATEGORY_COVULN = "new_code_vulnerabilities"
+
+
+class CompositionBandit(Composer):
+    """Analyzer Composition for Bandit security vulnerabilities."""
+
+    version = '0.1.0'
+
+    def get_composition(self):
+        return [Bandit()]
+
+    def get_category(self):
+        return CATEGORY_COVULN
+
+    def get_kind(self):
+        return BANDIT
+
+    def merge_results(self, results):
+        return results[0]
