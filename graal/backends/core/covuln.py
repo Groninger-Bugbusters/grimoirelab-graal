@@ -23,6 +23,7 @@
 
 import logging
 import os
+from graal.backends.core.cocom import CATEGORY_COCOM_LIZARD_FILE
 
 from graal.graal import (Graal,
                          GraalCommand,
@@ -30,9 +31,14 @@ from graal.graal import (Graal,
                          GraalRepository,
                          DEFAULT_WORKTREE_PATH)
 from graal.backends.core.analyzers.bandit import Bandit
+from graal.backends.core.analyzers.new_analyzer import NewAnalyzer
 from perceval.utils import DEFAULT_DATETIME, DEFAULT_LAST_DATETIME
 
 CATEGORY_COVULN = 'code_vulnerabilities'
+CATEGORY_NEW_ANALYZER = 'category_new_analyzer'
+
+BANDIT = 'bandit'
+NEW_ANALYZER = 'new_analyzer'
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +77,8 @@ class CoVuln(Graal):
         if not self.entrypoint:
             raise GraalError(cause="Entrypoint cannot be null")
 
-        self.vuln_analyzer = VulnAnalyzer(self.details)
+        self.vuln_analyzer = None
+        self.analyzer_kind = None
 
     def fetch(self, category=CATEGORY_COVULN, paths=None,
               from_date=DEFAULT_DATETIME, to_date=DEFAULT_LAST_DATETIME,
@@ -82,6 +89,13 @@ class CoVuln(Graal):
                               from_date=from_date, to_date=to_date,
                               branches=branches, latest_items=latest_items)
 
+        if category == CATEGORY_COVULN:
+            self.analyzer_kind = BANDIT
+        elif category == CATEGORY_NEW_ANALYZER:
+            self.analyzer_kind = NEW_ANALYZER
+        else:
+            raise GraalError(cause="Unknown category %s" % category)
+
         return items
 
     @staticmethod
@@ -91,7 +105,13 @@ class CoVuln(Graal):
         This backend only generates one type of item which is
         'code_quality'.
         """
-        return CATEGORY_COVULN
+
+        if item['analyzer'] == BANDIT:
+            return CATEGORY_COVULN
+        elif item['analyzer'] == NEW_ANALYZER:
+            return CATEGORY_NEW_ANALYZER
+        else:
+            raise GraalError(cause="Unknown analyzer %s" % item['analyzer'])
 
     def _filter_commit(self, commit):
         """Filter a commit according to its data (e.g., author, sha, etc.)
@@ -131,15 +151,22 @@ class CoVuln(Graal):
         commit.pop('files', None)
         commit.pop('parents', None)
         commit.pop('refs', None)
+        commit['analyzer'] = self.analyzer_kind
+
         return commit
 
 
 class VulnAnalyzer:
     """Class to identify security vulnerabilities in a Python project"""
 
-    def __init__(self, details=False):
+    def __init__(self, details=False, kind=BANDIT):
         self.details = details
-        self.bandit = Bandit()
+        self.kind = kind
+
+        if self.kind == BANDIT:
+            self.bandit = Bandit()
+        else:
+            self.new_analyzer = NewAnalyzer()
 
     def analyze(self, folder_path):
         """Analyze the content of a folder using Bandit
@@ -156,7 +183,11 @@ class VulnAnalyzer:
             'folder_path': folder_path,
             'details': self.details
         }
-        analysis = self.bandit.analyze(**kwargs)
+
+        if self.kind == BANDIT:
+            analysis = self.bandit.analyze(**kwargs)
+        else:
+            analysis = self.new_analyzer.analyze(**kwargs)
 
         return analysis
 
